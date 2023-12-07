@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="window_background">#FFFFFFFF</color>
+    <color name="primary_brand">#000000</color>
+
+    <color name="status_bar_color">@color/system_bar_fallback_color</color>
+    <color name="navigation_bar_color">@color/system_bar_fallback_color</color>
+
+    <color name="system_bar_fallback_color">#FF000000</color>
+
+    <color name="status_bar_color_23_api">@color/transparent_system_bar</color>
+    <color name="navigation_bar_color_27_api">@color/transparent_system_bar</color>
+    <!-- Android не любит полностью прозрачные цвета системных баров и всячески их ломает -->
+    <color name="transparent_system_bar">#01FFFFFF</color>
+</resources>

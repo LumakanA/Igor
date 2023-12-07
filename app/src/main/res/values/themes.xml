@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- region Post Splash Theme -->
+    <!-- Post Splash 21 API Theme Wrapper -->
+    <style name="Theme.Igor.PostSplash.Api21" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:forceDarkAllowed" tools:targetApi="q">false</item>
+    </style>
+    <!-- Post Splash 23 API Theme Wrapper -->
+    <style name="Theme.Igor.PostSplash.Api23" parent="Theme.Igor.PostSplash.Api21" />
+    <!-- Post Splash 27 API Theme Wrapper -->
+    <style name="Theme.Igor.PostSplash.Api27" parent="Theme.Igor.PostSplash.Api23" />
+    <!-- Post Splash Theme -->
+    <style name="Theme.Igor.PostSplash" parent="Theme.Igor.PostSplash.Api27">
+        <item name="android:windowBackground">@color/window_background</item>
+        <item name="android:statusBarColor">@color/status_bar_color</item>
+        <item name="android:navigationBarColor">@color/navigation_bar_color</item>
+    </style>
+    <!-- endregion Post Splash Theme -->
+
+    <!-- region Splash Theme -->
+    <!-- Splash 21 API Theme Wrapper -->
+    <style name="Theme.Igor.Api21" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:forceDarkAllowed" tools:targetApi="q">false</item>
+    </style>
+    <!-- Splash 23 API Theme Wrapper -->
+    <style name="Theme.Igor.Api23" parent="Theme.Igor.Api21" />
+    <!-- Splash 31 API Theme Wrapper -->
+    <style name="Theme.Igor.Api31" parent="Theme.Igor.Api23" />
+    <!-- Splash Theme -->
+    <style name="Theme.Igor" parent="Theme.Igor.Api31">
+        <item name="android:windowBackground">@drawable/bg_splash</item>
+        <item name="android:statusBarColor">@color/primary_brand</item>
+        <item name="android:navigationBarColor">@color/primary_brand</item>
+    </style>
+    <!-- endregion Splash Theme -->
+</resources>

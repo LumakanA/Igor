@@ -1,0 +1,5 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <style name="Theme.Igor.PostSplash.Api23" parent="Theme.Igor.PostSplash.Api21">
+        <item name="android:windowLightStatusBar">true</item>
+    </style>
+</resources>
