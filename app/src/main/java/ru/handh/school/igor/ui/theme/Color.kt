@@ -8,7 +8,7 @@ data class AppColors(
     val primary: Color,
     val textOnControl: Color,
     val primaryDisabled: Color,
-    val borderGrey: Color
+    val grey: Color
 )
 
 val defaultColors = AppColors(
@@ -16,5 +16,5 @@ val defaultColors = AppColors(
     primary = Color(0xFF0D6EFD),
     textOnControl = Color(0xFFFFFFFF),
     primaryDisabled = Color(0xFF62a0fd),
-    borderGrey = Color(0xFFC2C2C2)
+    grey = Color(0xFFC2C2C2)
 )

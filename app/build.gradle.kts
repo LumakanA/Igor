@@ -3,6 +3,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id("org.jetbrains.kotlin.plugin.serialization")
 }
 
 android {
@@ -52,6 +53,11 @@ android {
 }
 
 dependencies {
+
+    implementation ("io.ktor:ktor-client-core:1.6.4")
+    implementation ("io.ktor:ktor-client-json:1.6.4")
+    implementation("io.ktor:ktor-client-serialization:1.6.4")
+    implementation ("io.ktor:ktor-client-android:1.6.4")
 
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")

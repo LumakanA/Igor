@@ -9,41 +9,54 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ru.handh.school.igor.R
 import ru.handh.school.igor.ui.theme.AppTheme
 
 private val DefaultContainerHeight = 56.dp
+private val DefaultBorderSize = 1.dp
 
 @Composable
 fun AppTextField(
     modifier: Modifier = Modifier,
     value: String,
     onValueChange: (String) -> Unit,
-    label: String,
-    visualTransformation: VisualTransformation = VisualTransformation.None
+    hint: String,
 ) {
+    var isFocused by remember { mutableStateOf(false) }
     BasicTextField(
+        modifier = modifier
+            .border(
+                DefaultBorderSize, if (isFocused) {
+                    AppTheme.colors.primary
+                } else {
+                    AppTheme.colors.grey
+                },
+                shape = AppTheme.roundings.large
+            )
+            .onFocusChanged { focusState ->
+                isFocused = focusState.isFocused
+            },
         value = value,
         onValueChange = { onValueChange(it) },
         textStyle = AppTheme.textStyles.text1,
-        modifier = modifier,
-        visualTransformation = visualTransformation,
         decorationBox = { innerTextField ->
             Box(
                 modifier = Modifier
                     .clip(AppTheme.roundings.large)
-                    .fillMaxWidth()
                     .height(DefaultContainerHeight)
                     .background(AppTheme.colors.textOnControl)
-                    .border(1.dp, AppTheme.colors.borderGrey, shape = AppTheme.roundings.large)
                     .padding(
                         vertical = AppTheme.offsets.small,
                         horizontal = AppTheme.offsets.emailOffset
@@ -51,9 +64,8 @@ fun AppTextField(
                 contentAlignment = Alignment.CenterStart
             ) {
                 BasicText(
-                    text = if (value.isEmpty()) label else "",
+                    text = if (value.isEmpty()) hint else "",
                     style = AppTheme.textStyles.text1.copy(color = Color.Gray),
-                    modifier = Modifier.padding(horizontal = AppTheme.offsets.small)
                 )
                 innerTextField()
             }
@@ -62,16 +74,13 @@ fun AppTextField(
 }
 
 
-
 @Preview
 @Composable
 fun AppTextFieldPreview() {
-    AppTheme {
-        AppTextField(
-            modifier = Modifier.fillMaxWidth(),
-            value = stringResource(R.string.email),
-            onValueChange = { },
-            label = "EmailTextField"
-        )
-    }
+    AppTextField(
+        modifier = Modifier.fillMaxWidth(),
+        value = stringResource(R.string.email),
+        onValueChange = { },
+        hint = "EmailTextField"
+    )
 }

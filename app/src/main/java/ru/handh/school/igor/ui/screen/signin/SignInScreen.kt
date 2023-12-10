@@ -2,7 +2,6 @@ package ru.handh.school.igor.ui.screen.signin
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
@@ -42,7 +41,6 @@ private fun SignInContent(
     Scaffold { containerPadding ->
         Box(
             modifier = Modifier
-                .fillMaxSize()
                 .padding(containerPadding)
                 .padding(AppTheme.offsets.medium)
                 .offset(y = 100.dp),
@@ -54,22 +52,21 @@ private fun SignInContent(
                     .padding(horizontal = AppTheme.offsets.medium)
             ) {
                 BasicText(
+                    modifier = Modifier.padding(bottom = AppTheme.offsets.large),
                     text = stringResource(R.string.login),
-                    style = AppTheme.textStyles.text2,
-                    modifier = Modifier.padding(bottom = AppTheme.offsets.large)
+                    style = AppTheme.textStyles.text2
                 )
 
                 AppTextField(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(bottom = AppTheme.offsets.tiny),
-                    label = stringResource(R.string.email),
+                    hint = stringResource(R.string.email),
                     value = state.username,
                     onValueChange = {
                         onAction(SignInViewAction.UpdateUsername(it))
                     }
                 )
-
 
                 AppButton(
                     modifier = Modifier
