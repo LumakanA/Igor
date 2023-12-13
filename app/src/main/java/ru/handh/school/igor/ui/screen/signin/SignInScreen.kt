@@ -74,9 +74,9 @@ private fun SignInContent(
                         .fillMaxWidth()
                         .padding(bottom = AppTheme.offsets.large),
                     hint = stringResource(R.string.email),
-                    value = state.username,
+                    value = state.email,
                     onValueChange = {
-                        onAction(SignInViewAction.UpdateUsername(it))
+                        onAction(SignInViewAction.UpdateEmail(it))
                     }
                 )
 
