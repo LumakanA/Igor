@@ -9,10 +9,15 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsControllerCompat
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import ru.handh.school.igor.R
 import ru.handh.school.igor.data.util.PreferencesManager
+import ru.handh.school.igor.ui.screen.profile.ProfileScreen
+import ru.handh.school.igor.ui.screen.profile.ProfileViewModel
 import ru.handh.school.igor.ui.screen.signin.SignInScreen
+import ru.handh.school.igor.ui.screen.signin.SignInViewModel
 import ru.handh.school.igor.ui.theme.AppTheme
 
 /**
@@ -32,7 +37,7 @@ import ru.handh.school.igor.ui.theme.AppTheme
  */
 class MainActivity : ComponentActivity() {
 
-    private lateinit var preferencesManager: PreferencesManager
+    lateinit var preferencesManager: PreferencesManager
     private val shouldSplashScreenDismiss: Boolean
         get() = true
 
@@ -70,7 +75,21 @@ class MainActivity : ComponentActivity() {
     private fun setupRootComponent() {
         setContent {
             AppTheme {
-                SignInScreen(vm = viewModel())
+                val navController = rememberNavController()
+                NavHost(navController = navController, startDestination = "signin") {
+                    composable("signin") {
+                        SignInScreen(
+                            vm = SignInViewModel(),
+                            navController = navController
+                        )
+                    }
+                    composable("profile") {
+                        ProfileScreen(
+                            vm = ProfileViewModel(),
+                            navController = navController
+                        )
+                    }
+                }
             }
         }
         keepSplashScreenUntilAllComplete()

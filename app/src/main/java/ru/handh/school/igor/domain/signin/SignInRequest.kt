@@ -1,4 +1,4 @@
-package ru.handh.school.igor.domain
+package ru.handh.school.igor.domain.signin
 
 import kotlinx.serialization.Serializable
 

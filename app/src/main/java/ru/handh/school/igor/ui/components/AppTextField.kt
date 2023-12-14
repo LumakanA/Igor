@@ -56,7 +56,7 @@ fun AppTextField(
                 modifier = Modifier
                     .clip(AppTheme.roundings.large)
                     .height(DefaultContainerHeight)
-                    .background(AppTheme.colors.textOnControl)
+                    .background(AppTheme.colors.surfaceBright)
                     .padding(
                         vertical = AppTheme.offsets.small,
                         horizontal = AppTheme.offsets.emailOffset

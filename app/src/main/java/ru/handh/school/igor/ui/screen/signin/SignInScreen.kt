@@ -1,5 +1,7 @@
 package ru.handh.school.igor.ui.screen.signin
 
+import android.util.Log
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -21,6 +23,8 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import ru.handh.school.igor.R
 import ru.handh.school.igor.ui.components.AppButton
 import ru.handh.school.igor.ui.components.AppTextField
@@ -28,12 +32,14 @@ import ru.handh.school.igor.ui.theme.AppTheme
 
 @Composable
 fun SignInScreen(
-    vm: SignInViewModel
+    vm: SignInViewModel,
+    navController: NavController
 ) {
     val state by vm.state.collectAsState()
     SignInContent(
         state = state,
-        onAction = vm::onAction
+        onAction = vm::onAction,
+        navController
     )
 }
 
@@ -41,7 +47,8 @@ fun SignInScreen(
 @Composable
 private fun SignInContent(
     state: SignInState,
-    onAction: (SignInViewAction) -> Unit = {}
+    onAction: (SignInViewAction) -> Unit = {},
+    navController: NavController
 ) {
     val quarterScreenHeight = with(LocalDensity.current) {
         (LocalConfiguration.current.screenHeightDp.dp / 8)
@@ -51,8 +58,7 @@ private fun SignInContent(
             modifier = Modifier
                 .fillMaxSize()
                 .offset(y = quarterScreenHeight)
-                .padding(containerPadding)
-                .padding(AppTheme.offsets.medium),
+                .padding(containerPadding),
             contentAlignment = Alignment.TopCenter
         ) {
             Column(
@@ -80,16 +86,32 @@ private fun SignInContent(
                     }
                 )
 
+                AnimatedVisibility(visible = state.showVerificationCodeInput) {
+                    AppTextField(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = AppTheme.offsets.large),
+                        hint = stringResource(R.string.verification_code),
+                        value = state.code,
+                        onValueChange = {
+                            onAction(SignInViewAction.UpdateVerificationCode(it))
+                        }
+                    )
+                }
+
                 AppButton(
-                    modifier = Modifier
-                        .fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth(),
                     label = stringResource(R.string.loginButton),
                     loading = state.signInLoading,
                     onClick = {
-                        onAction(SignInViewAction.SubmitClicked)
+                        if (state.showVerificationCodeInput) {
+                            Log.d("qwerty", "nav_to_prof_button")
+                            onAction(SignInViewAction.SubmitClickedCode)
+                        } else {
+                            onAction(SignInViewAction.SubmitClicked)
+                        }
                     }
                 )
-
             }
         }
     }
@@ -99,6 +121,7 @@ private fun SignInContent(
 @Composable
 private fun SignInContentPreview() {
     SignInContent(
-        state = InitialSignInState
+        state = InitialSignInState,
+        navController = rememberNavController()
     )
 }
