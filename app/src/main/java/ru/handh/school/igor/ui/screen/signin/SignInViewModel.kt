@@ -9,10 +9,12 @@ import ru.handh.school.igor.domain.signin.SignInRequest
 import ru.handh.school.igor.domain.signin.SignInUseCase
 import ru.handh.school.igor.ui.base.BaseViewModel
 
-class SignInViewModel :
+class SignInViewModel(
+    private val signInUseCase: SignInUseCase,
+    private val sessionUseCase: SessionUseCase
+) :
     BaseViewModel<SignInState, SignInViewAction>(InitialSignInState) {
-    private val signInUseCase = SignInUseCase()
-    private val sessionUseCase = SessionUseCase()
+
 
     override fun onAction(action: SignInViewAction) =
         when (action) {

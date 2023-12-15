@@ -52,15 +52,23 @@ android {
 
 dependencies {
 
+    implementation("io.insert-koin:koin-core:3.4.3")
+    implementation("io.insert-koin:koin-android:3.4.3")
+    implementation("io.insert-koin:koin-androidx-compose:3.4.6")
+
     implementation("androidx.navigation:navigation-compose:2.7.6")
-    implementation("io.ktor:ktor-client-core:1.6.4")
-    implementation("io.ktor:ktor-client-json:1.6.4")
-    implementation("io.ktor:ktor-client-serialization:1.6.4")
-    implementation("io.ktor:ktor-client-android:1.6.4")
+
+    implementation("io.ktor:ktor-client-json:2.3.7")
+    implementation("io.ktor:ktor-client-serialization:2.3.7")
+    implementation("io.ktor:ktor-client-android:2.3.7")
+    implementation("io.ktor:ktor-client-core:2.3.7")
+    implementation("io.ktor:ktor-client-okhttp:2.3.7")
+    implementation("io.ktor:ktor-client-content-negotiation:2.3.7")
+    implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.7")
 
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
-    implementation("androidx.activity:activity-compose:1.8.1")
+    implementation("androidx.activity:activity-compose:1.8.2")
     implementation(platform("androidx.compose:compose-bom:2023.03.00"))
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-graphics")

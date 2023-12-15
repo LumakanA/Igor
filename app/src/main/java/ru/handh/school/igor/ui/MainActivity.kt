@@ -9,15 +9,13 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsControllerCompat
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import org.koin.android.ext.android.inject
+import org.koin.androidx.compose.koinViewModel
 import ru.handh.school.igor.R
-import ru.handh.school.igor.data.util.PreferencesManager
+import ru.handh.school.igor.data.KeyValueStorage
 import ru.handh.school.igor.ui.screen.profile.ProfileScreen
-import ru.handh.school.igor.ui.screen.profile.ProfileViewModel
 import ru.handh.school.igor.ui.screen.signin.SignInScreen
-import ru.handh.school.igor.ui.screen.signin.SignInViewModel
 import ru.handh.school.igor.ui.theme.AppTheme
 
 /**
@@ -37,14 +35,13 @@ import ru.handh.school.igor.ui.theme.AppTheme
  */
 class MainActivity : ComponentActivity() {
 
-    lateinit var preferencesManager: PreferencesManager
     private val shouldSplashScreenDismiss: Boolean
         get() = true
+    private val storage: KeyValueStorage by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        preferencesManager = PreferencesManager(this)
         setupWindow()
         setupRootComponent()
     }
@@ -76,19 +73,16 @@ class MainActivity : ComponentActivity() {
         setContent {
             AppTheme {
                 val navController = rememberNavController()
-                NavHost(navController = navController, startDestination = "signin") {
-                    composable("signin") {
-                        SignInScreen(
-                            vm = SignInViewModel(),
-                            navController = navController
-                        )
-                    }
-                    composable("profile") {
-                        ProfileScreen(
-                            vm = ProfileViewModel(),
-                            navController = navController
-                        )
-                    }
+                if (storage.accessToken != null) {
+                    ProfileScreen(
+                        vm = koinViewModel(),
+                        navController = navController
+                    )
+                } else {
+                    SignInScreen(
+                        vm = koinViewModel(),
+                        navController = navController
+                    )
                 }
             }
         }

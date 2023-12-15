@@ -35,6 +35,9 @@ fun SignInScreen(
     vm: SignInViewModel,
     navController: NavController
 ) {
+//    LaunchedEffect(vm.) {
+//        navController.navigate("profile")
+//    }
     val state by vm.state.collectAsState()
     SignInContent(
         state = state,
