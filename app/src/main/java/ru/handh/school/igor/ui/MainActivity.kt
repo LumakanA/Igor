@@ -9,6 +9,8 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import org.koin.android.ext.android.inject
 import org.koin.androidx.compose.koinViewModel
@@ -73,16 +75,32 @@ class MainActivity : ComponentActivity() {
         setContent {
             AppTheme {
                 val navController = rememberNavController()
-                if (storage.accessToken != null) {
-                    ProfileScreen(
-                        vm = koinViewModel(),
-                        navController = navController
-                    )
-                } else {
-                    SignInScreen(
-                        vm = koinViewModel(),
-                        navController = navController
-                    )
+
+                NavHost(navController = navController, startDestination = "start") {
+                    composable("start") {
+                        if (storage.accessToken != null) {
+                            ProfileScreen(
+                                vm = koinViewModel(),
+                                navController = navController
+                            )
+                        } else {
+                            SignInScreen(
+                                vm = koinViewModel(),
+                                navController = navController,
+                                this@MainActivity
+                            )
+                        }
+                    }
+                    composable("signIn") {
+                        SignInScreen(
+                            vm = koinViewModel(),
+                            navController = navController,
+                            this@MainActivity
+                        )
+                    }
+                    composable("profile") {
+                        ProfileScreen(vm = koinViewModel(), navController = navController)
+                    }
                 }
             }
         }

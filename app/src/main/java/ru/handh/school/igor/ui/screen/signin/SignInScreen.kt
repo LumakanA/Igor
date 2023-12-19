@@ -1,6 +1,8 @@
 package ru.handh.school.igor.ui.screen.signin
 
+import android.content.Context
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,6 +16,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -24,8 +27,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import ru.handh.school.igor.R
+import ru.handh.school.igor.domain.Result
 import ru.handh.school.igor.ui.components.AppButton
 import ru.handh.school.igor.ui.components.AppTextField
 import ru.handh.school.igor.ui.theme.AppTheme
@@ -33,16 +36,34 @@ import ru.handh.school.igor.ui.theme.AppTheme
 @Composable
 fun SignInScreen(
     vm: SignInViewModel,
-    navController: NavController
+    navController: NavController,
+    context: Context
 ) {
-//    LaunchedEffect(vm.) {
-//        navController.navigate("profile")
-//    }
+    LaunchedEffect(vm, context) {
+        vm.codeResult.collect { result ->
+            when (result) {
+                is Result.UserAuth -> {
+                    Log.d("SessionCollect", "UserAuth result received")
+                    Toast.makeText(context, R.string.email_send, Toast.LENGTH_LONG).show()
+                }
+
+                is Result.ReceivedSession -> {
+                    Log.d("SessionCollect", "ReceivedSession result received")
+                    Toast.makeText(context, R.string.you_logged, Toast.LENGTH_LONG).show()
+                    navController.navigate("profile")
+                }
+
+                is Result.UnknownError -> {
+                    Log.d("SessionCollect", "UnknownError result received")
+                    Toast.makeText(context, R.string.error_occurred, Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+    }
     val state by vm.state.collectAsState()
     SignInContent(
         state = state,
-        onAction = vm::onAction,
-        navController
+        onAction = vm::onAction
     )
 }
 
@@ -51,7 +72,6 @@ fun SignInScreen(
 private fun SignInContent(
     state: SignInState,
     onAction: (SignInViewAction) -> Unit = {},
-    navController: NavController
 ) {
     val quarterScreenHeight = with(LocalDensity.current) {
         (LocalConfiguration.current.screenHeightDp.dp / 8)
@@ -106,6 +126,7 @@ private fun SignInContent(
                     modifier = Modifier.fillMaxWidth(),
                     label = stringResource(R.string.loginButton),
                     loading = state.signInLoading,
+                    enabled = state.buttonEnabled,
                     onClick = {
                         if (state.showVerificationCodeInput) {
                             Log.d("qwerty", "nav_to_prof_button")
@@ -124,7 +145,6 @@ private fun SignInContent(
 @Composable
 private fun SignInContentPreview() {
     SignInContent(
-        state = InitialSignInState,
-        navController = rememberNavController()
+        state = InitialSignInState
     )
 }

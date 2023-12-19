@@ -110,10 +110,10 @@ private fun ProfileContent(
                     .padding(AppTheme.offsets.medium)
                     .align(Alignment.BottomCenter),
                 label = stringResource(R.string.exitButton),
-                loading = state.ProfileLoading,
+                loading = state.profileLoading,
                 onClick = {
                     onAction(ProfileViewAction.SubmitClicked)
-                    navController.navigate("signin")
+                    navController.navigate("signIn")
                 },
                 backgroundColor = AppTheme.colors.red
             )

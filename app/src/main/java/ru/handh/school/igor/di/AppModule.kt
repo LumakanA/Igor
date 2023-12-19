@@ -15,7 +15,7 @@ val appModule = module {
         KeyValueStorage(get())
     }
     single {
-        IgorRepository()
+        IgorRepository(get())
     }
     single {
         DeviceIdProvider(get())
@@ -24,7 +24,7 @@ val appModule = module {
         SignInUseCase(get(), get())
     }
     factory {
-        SessionUseCase(get(), get())
+        SessionUseCase(get(), get(), get())
     }
     viewModel {
         SignInViewModel(get(), get())

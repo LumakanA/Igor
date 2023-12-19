@@ -5,9 +5,12 @@ import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.ClientRequestException
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.get
+import io.ktor.client.request.header
 import io.ktor.client.request.headers
+import io.ktor.client.request.parameter
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
+import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.bodyAsText
 import io.ktor.content.TextContent
 import io.ktor.http.ContentType
@@ -15,10 +18,15 @@ import io.ktor.http.isSuccess
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import ru.handh.school.igor.data.session.Session
+import ru.handh.school.igor.data.session.SessionData
+import ru.handh.school.igor.domain.Result
 import ru.handh.school.igor.domain.session.SessionResponse
 import ru.handh.school.igor.domain.signin.SignInRequest
 
-class IgorRepository : IgorRepositoryDataSource {
+class IgorRepository(
+    private val storage: KeyValueStorage
+) : IgorRepositoryDataSource {
     private val client = HttpClient(OkHttp) {
         install(ContentNegotiation) {
             json(Json {
@@ -35,52 +43,46 @@ class IgorRepository : IgorRepositoryDataSource {
         }
     }
 
-    override suspend fun postSignIn(id: String, signInRequest: SignInRequest) {
+    override suspend fun postSignIn(id: String, signInRequest: SignInRequest): HttpResponse {
         val requestBody = TextContent(
             text = Json.encodeToString(signInRequest),
             contentType = ContentType.Application.Json
         )
 
-        try {
-            client.post(ApiUrls.POST_SIGN_IN) {
+        return try {
+            val response = client.post(ApiUrls.POST_SIGN_IN) {
                 setBody(requestBody)
                 headers {
                     append("X-Device-Id", id)
                 }
             }
+            response
         } catch (e: ClientRequestException) {
-            println("Request failed with status: ${e.response.status}")
-            println("Response content: ${e.response.bodyAsText()}")
             throw e
         }
     }
 
-    override suspend fun getSession(id: String, sessionResponse: SessionResponse) {
-        try {
+    override suspend fun getSession(id: String, sessionResponse: SessionResponse): Result<Session> {
+        return try {
             val response = client.get(ApiUrls.GET_SESSION) {
-                val requestBody = TextContent(
-                    text = Json.encodeToString(sessionResponse),
-                    contentType = ContentType.Application.Json
-                )
-                headers {
-                    setBody(requestBody)
-                    append("X-Device-Id", id)
-                    append("X-OPT", sessionResponse.code)
-                }
+                parameter("lifeTime", "5")
+                header("X-Device-Id", id)
+                header("X-OTP", sessionResponse.code)
             }
-
             if (response.status.isSuccess()) {
-                TODO()
+                val sessionData = Json.decodeFromString<SessionData>(response.bodyAsText())
+                val session = sessionData.data.session
+                storage.accessToken = session.accessToken
+                storage.refreshToken = session.refreshToken
+                Result.ReceivedSession(session)
             } else {
-                println("Request failed with status: ${response.status}")
-                println("Response content: ${response.bodyAsText()}")
+                Result.UnknownError()
             }
         } catch (e: ClientRequestException) {
-            println("Request failed with status: ${e.response.status}")
-            println("Response content: ${e.response.bodyAsText()}")
-            throw e
+            Result.UnknownError()
         }
     }
+
 
     override suspend fun postRefreshToken() {
         TODO("Not yet implemented")

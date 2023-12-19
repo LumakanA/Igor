@@ -1,9 +1,11 @@
 package ru.handh.school.igor.ui.screen.profile
 
 val InitialProfileState = ProfileState(
-    ProfileLoading = false
+    accessToken = null,
+    profileLoading = false
 )
 
 data class ProfileState(
-    val ProfileLoading: Boolean
+    val accessToken: String?,
+    val profileLoading: Boolean
 )

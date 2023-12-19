@@ -5,7 +5,7 @@ val InitialSignInState = SignInState(
     email = "",
     code = "",
     showVerificationCodeInput = false,
-    isSuccessful = false
+    buttonEnabled = false
 )
 
 data class SignInState(
@@ -13,5 +13,5 @@ data class SignInState(
     val email: String,
     val code: String,
     val showVerificationCodeInput: Boolean,
-    val isSuccessful: Boolean = false
+    val buttonEnabled: Boolean
 )

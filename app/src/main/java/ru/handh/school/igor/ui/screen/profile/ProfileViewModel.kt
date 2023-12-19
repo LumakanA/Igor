@@ -5,6 +5,16 @@ import ru.handh.school.igor.ui.base.BaseViewModel
 class ProfileViewModel :
     BaseViewModel<ProfileState, ProfileViewAction>(InitialProfileState) {
     override fun onAction(action: ProfileViewAction) {
-        TODO("Not yet implemented")
+        when (action) {
+            is ProfileViewAction.SubmitClicked -> onSubmitClicked()
+            is ProfileViewAction.UpdateToken -> onUpdateToken(action.token)
+        }
+    }
+
+    private fun onSubmitClicked() {
+    }
+
+    private fun onUpdateToken(token: String) {
+        TODO()
     }
 }
