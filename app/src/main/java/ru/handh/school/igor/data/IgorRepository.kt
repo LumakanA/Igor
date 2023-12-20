@@ -84,12 +84,49 @@ class IgorRepository(
     }
 
 
-    override suspend fun postRefreshToken() {
-        TODO("Not yet implemented")
+    override suspend fun postRefreshToken(): Result<Session> {
+        return try {
+            val refreshToken = storage.refreshToken
+
+            if (refreshToken != null) {
+                val response = client.post(ApiUrls.REFRESH_TOKEN) {
+                    header("Authorization", "Bearer $refreshToken")
+                }
+
+                if (response.status.isSuccess()) {
+                    val sessionData = Json.decodeFromString<SessionData>(response.bodyAsText())
+                    val session = sessionData.data.session
+
+                    storage.accessToken = session.accessToken
+                    storage.refreshToken = session.refreshToken
+
+                    Result.ReceivedSession(session)
+                } else {
+                    Result.UnknownError()
+                }
+            } else {
+                Result.UnknownError()
+            }
+        } catch (e: ClientRequestException) {
+            Result.UnknownError()
+        }
     }
 
+
     override suspend fun postSignOut() {
-        TODO("Not yet implemented")
+        try {
+            val refreshToken = storage.refreshToken
+
+            if (refreshToken != null) {
+                client.post(ApiUrls.POST_SIGN_OUT) {
+                    header("Authorization", "Bearer $refreshToken")
+                }
+                storage.accessToken = null
+                storage.refreshToken = null
+            }
+        } catch (e: ClientRequestException) {
+            throw e
+        }
     }
 
     override suspend fun getProfile() {

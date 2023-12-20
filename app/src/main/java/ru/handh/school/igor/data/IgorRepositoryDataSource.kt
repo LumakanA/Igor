@@ -9,7 +9,7 @@ import ru.handh.school.igor.domain.signin.SignInRequest
 interface IgorRepositoryDataSource {
     suspend fun postSignIn(id: String, signInRequest: SignInRequest): HttpResponse
     suspend fun getSession(id: String, sessionResponse: SessionResponse): Result<Session>
-    suspend fun postRefreshToken()
+    suspend fun postRefreshToken(): Result<Session>
     suspend fun postSignOut()
     suspend fun getProfile()
     suspend fun getProjects()

@@ -1,20 +1,23 @@
 package ru.handh.school.igor.ui.screen.profile
 
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.launch
+import ru.handh.school.igor.domain.singout.SignOutUseCase
 import ru.handh.school.igor.ui.base.BaseViewModel
 
-class ProfileViewModel :
+class ProfileViewModel(
+    private val signOutUseCase: SignOutUseCase
+) :
     BaseViewModel<ProfileState, ProfileViewAction>(InitialProfileState) {
     override fun onAction(action: ProfileViewAction) {
         when (action) {
-            is ProfileViewAction.SubmitClicked -> onSubmitClicked()
-            is ProfileViewAction.UpdateToken -> onUpdateToken(action.token)
+            ProfileViewAction.SubmitClicked -> onSubmitClicked()
         }
     }
 
     private fun onSubmitClicked() {
-    }
-
-    private fun onUpdateToken(token: String) {
-        TODO()
+        viewModelScope.launch {
+            signOutUseCase.execute()
+        }
     }
 }

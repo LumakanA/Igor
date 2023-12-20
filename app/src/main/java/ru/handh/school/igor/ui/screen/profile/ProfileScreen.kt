@@ -1,5 +1,6 @@
 package ru.handh.school.igor.ui.screen.profile
 
+import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -19,6 +20,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -28,6 +30,8 @@ import androidx.navigation.compose.rememberNavController
 import ru.handh.school.igor.R
 import ru.handh.school.igor.ui.components.AppButton
 import ru.handh.school.igor.ui.theme.AppTheme
+import ru.handh.school.igor.utils.versionCode
+import ru.handh.school.igor.utils.versionName
 
 
 @Composable
@@ -48,7 +52,8 @@ fun ProfileScreen(
 private fun ProfileContent(
     state: ProfileState,
     onAction: (ProfileViewAction) -> Unit = {},
-    navController: NavController
+    navController: NavController,
+    context: Context = LocalContext.current
 ) {
     Scaffold(
         topBar = {
@@ -93,12 +98,12 @@ private fun ProfileContent(
 
                         BasicText(
                             modifier = Modifier.padding(top = AppTheme.offsets.small),
-                            text = stringResource(R.string.version),
+                            text = stringResource(R.string.version, context.versionName),
                             style = AppTheme.textStyles.text5
                         )
 
                         BasicText(
-                            text = stringResource(R.string.build_number),
+                            text = stringResource(R.string.build_number, context.versionCode),
                             style = AppTheme.textStyles.text5
                         )
                     }

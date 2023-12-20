@@ -7,8 +7,8 @@
     <string name="verification_code">Код из письма</string>
     <string name="about">О приложении</string>
     <string name="igor">СУП «Игорь»</string>
-    <string name="version">Версия 1.13</string>
-    <string name="build_number">Номер сборки 42</string>
+    <string name="version">Версия: %s</string>
+    <string name="build_number">Номер сборки: %s"</string>
     <string name="email_send">Сообщение отправлено на почту</string>
     <string name="you_logged">Вы успешно вошли</string>
     <string name="error_occurred">Произошла ошибка</string>

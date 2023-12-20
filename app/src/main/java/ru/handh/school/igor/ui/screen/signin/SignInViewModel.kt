@@ -42,7 +42,11 @@ class SignInViewModel(
                     if (resultSignIn is Result.UserAuth) {
                         resultChannel.send(resultSignIn)
                         reduceState {
-                            it.copy(showVerificationCodeInput = true, signInLoading = false, buttonEnabled = false)
+                            it.copy(
+                                showVerificationCodeInput = true,
+                                signInLoading = false,
+                                buttonEnabled = false
+                            )
                         }
                     }
                 } catch (e: Exception) {
@@ -78,8 +82,7 @@ class SignInViewModel(
                 } catch (e: Exception) {
                     handleSignInError(e)
                 }
-            }
-            else {
+            } else {
                 reduceState {
                     it.copy(buttonEnabled = false)
                 }
