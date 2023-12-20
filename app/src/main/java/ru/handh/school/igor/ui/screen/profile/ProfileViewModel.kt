@@ -17,7 +17,13 @@ class ProfileViewModel(
 
     private fun onSubmitClicked() {
         viewModelScope.launch {
+            reduceState {
+                it.copy(profileLoading = true)
+            }
             signOutUseCase.execute()
+            reduceState {
+                it.copy(profileLoading = false)
+            }
         }
     }
 }
