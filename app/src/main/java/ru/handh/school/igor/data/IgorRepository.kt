@@ -91,8 +91,13 @@ class IgorRepository(
             if (refreshToken != null) {
                 val response = client.post(ApiUrls.REFRESH_TOKEN) {
                     header("Authorization", "Bearer $refreshToken")
+                    setBody(
+                        TextContent(
+                            Json.encodeToString { "refreshToken" to refreshToken },
+                            ContentType.Application.Json
+                        )
+                    )
                 }
-
                 if (response.status.isSuccess()) {
                     val sessionData = Json.decodeFromString<SessionData>(response.bodyAsText())
                     val session = sessionData.data.session
@@ -130,7 +135,13 @@ class IgorRepository(
     }
 
     override suspend fun getProfile() {
-        TODO("Not yet implemented")
+        try {
+            client.get(ApiUrls.GET_PROFILE) {
+                header("Authorization", "Bearer")
+            }
+        } catch (e: ClientRequestException) {
+            throw e
+        }
     }
 
     override suspend fun getProjects() {
