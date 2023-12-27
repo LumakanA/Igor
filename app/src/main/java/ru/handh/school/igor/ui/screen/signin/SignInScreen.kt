@@ -50,7 +50,7 @@ fun SignInScreen(
                 is Result.ReceivedSession -> {
                     Log.d("SessionCollect", "ReceivedSession result received")
                     Toast.makeText(context, R.string.you_logged, Toast.LENGTH_LONG).show()
-                    navController.navigate("profile")
+                    navController.navigate("homepage")
                 }
 
                 is Result.UnknownError -> {
@@ -129,7 +129,6 @@ private fun SignInContent(
                     enabled = state.buttonEnabled,
                     onClick = {
                         if (state.showVerificationCodeInput) {
-                            Log.d("qwerty", "nav_to_prof_button")
                             onAction(SignInViewAction.SubmitClickedCode)
                         } else {
                             onAction(SignInViewAction.SubmitClicked)

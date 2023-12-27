@@ -17,6 +17,7 @@ import org.koin.androidx.compose.koinViewModel
 import ru.handh.school.igor.R
 import ru.handh.school.igor.data.KeyValueStorage
 import ru.handh.school.igor.ui.screen.about.AboutScreen
+import ru.handh.school.igor.ui.screen.homepage.HomepageScreen
 import ru.handh.school.igor.ui.screen.profile.ProfileScreen
 import ru.handh.school.igor.ui.screen.signin.SignInScreen
 import ru.handh.school.igor.ui.theme.AppTheme
@@ -80,7 +81,7 @@ class MainActivity : ComponentActivity() {
                 NavHost(navController = navController, startDestination = "start") {
                     composable("start") {
                         if (storage.accessToken != null) {
-                            ProfileScreen(
+                            HomepageScreen(
                                 vm = koinViewModel(),
                                 navController = navController
                             )
@@ -98,6 +99,9 @@ class MainActivity : ComponentActivity() {
                             navController = navController,
                             this@MainActivity
                         )
+                    }
+                    composable("homepage") {
+                        HomepageScreen(vm = koinViewModel(), navController = navController)
                     }
                     composable("profile") {
                         ProfileScreen(vm = koinViewModel(), navController = navController)

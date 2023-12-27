@@ -63,4 +63,15 @@ class KeyValueStorage(
             .putString(key, value)
             .apply()
     }
+//
+//    fun loadTokens(): BearerTokens {
+//        val accessToken = this.accessToken ?: throw IllegalStateException("Access Token is null")
+//        val refreshToken = this.refreshToken ?: throw IllegalStateException("Refresh Token is null")
+//        return BearerTokens(accessToken, refreshToken)
+//    }
+//
+//    fun refreshTokens(newAccessToken: String, newRefreshToken: String) {
+//        this.accessToken = newAccessToken
+//        this.refreshToken = newRefreshToken
+//    }
 }

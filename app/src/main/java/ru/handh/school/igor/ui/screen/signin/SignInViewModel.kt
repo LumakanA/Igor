@@ -1,6 +1,5 @@
 package ru.handh.school.igor.ui.screen.signin
 
-import android.util.Log
 import android.util.Patterns
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.channels.Channel
@@ -14,8 +13,7 @@ import ru.handh.school.igor.ui.base.BaseViewModel
 class SignInViewModel(
     private val signInUseCase: SignInUseCase,
     private val sessionUseCase: SessionUseCase
-) :
-    BaseViewModel<SignInState, SignInViewAction>(InitialSignInState) {
+) : BaseViewModel<SignInState, SignInViewAction>(InitialSignInState) {
     private val resultChannel = Channel<Result<Unit>>()
     val codeResult = resultChannel.receiveAsFlow()
 
@@ -32,25 +30,35 @@ class SignInViewModel(
             val email = state.value.email
             if (emailValidation(email)) {
                 reduceState {
-                    it.copy(buttonEnabled = true)
+                    it.copy(buttonEnabled = true, signInLoading = true)
                 }
                 try {
-                    reduceState {
-                        it.copy(showVerificationCodeInput = false, signInLoading = true)
-                    }
                     val resultSignIn = signInUseCase.execute(email)
-                    if (resultSignIn is Result.UserAuth) {
-                        resultChannel.send(resultSignIn)
-                        reduceState {
-                            it.copy(
-                                showVerificationCodeInput = true,
-                                signInLoading = false,
-                                buttonEnabled = false
-                            )
+                    resultChannel.send(resultSignIn)
+                    when (resultSignIn) {
+                        is Result.UserAuth -> {
+                            reduceState {
+                                it.copy(
+                                    showVerificationCodeInput = true,
+                                    signInLoading = false,
+                                    buttonEnabled = false
+                                )
+                            }
+                        }
+                        is Result.UnknownError -> {
+                            reduceState {
+                                it.copy(signInLoading = false)
+                            }
+                        }
+
+                        is Result.ReceivedSession -> {
+                            resultChannel.send(resultSignIn)
                         }
                     }
                 } catch (e: Exception) {
-                    handleSignInError(e)
+                    reduceState {
+                        it.copy(signInLoading = false)
+                    }
                 }
             } else {
                 reduceState {
@@ -65,22 +73,35 @@ class SignInViewModel(
             val code = state.value.code
             if (codeValidation(code)) {
                 reduceState {
-                    it.copy(buttonEnabled = true)
+                    it.copy(buttonEnabled = true, signInLoading = true)
                 }
                 try {
-                    reduceState {
-                        it.copy(showVerificationCodeInput = true, signInLoading = false)
-                    }
                     val resultSession = sessionUseCase.execute(code)
-                    if (resultSession is Result.ReceivedSession) {
-                        resultChannel.send(resultSession)
-                        reduceState {
-                            it.copy(showVerificationCodeInput = false, signInLoading = true)
+                    resultChannel.send(resultSession)
+                    when (resultSession) {
+                        is Result.ReceivedSession -> {
+                            reduceState {
+                                it.copy(
+                                    showVerificationCodeInput = false,
+                                    signInLoading = false,
+                                    buttonEnabled = false
+                                )
+                            }
+                        }
+                        is Result.UnknownError -> {
+                            reduceState {
+                                it.copy(signInLoading = false)
+                            }
+                        }
+
+                        is Result.UserAuth -> {
+                            resultChannel.send(resultSession)
                         }
                     }
-                    Log.d("qwerty", "send_code")
                 } catch (e: Exception) {
-                    handleSignInError(e)
+                    reduceState {
+                        it.copy(signInLoading = false)
+                    }
                 }
             } else {
                 reduceState {
@@ -96,10 +117,6 @@ class SignInViewModel(
 
     private fun onUpdateVerificationCode(code: String) = reduceState {
         it.copy(code = code, buttonEnabled = codeValidation(code))
-    }
-
-    private fun handleSignInError(e: Exception) {
-        println("Sign In Error: ${e.message}")
     }
 
     private fun emailValidation(email: String): Boolean {

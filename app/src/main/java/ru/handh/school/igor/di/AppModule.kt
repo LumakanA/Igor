@@ -9,6 +9,7 @@ import ru.handh.school.igor.domain.session.SessionUseCase
 import ru.handh.school.igor.domain.signin.SignInUseCase
 import ru.handh.school.igor.domain.singout.SignOutUseCase
 import ru.handh.school.igor.ui.screen.about.AboutViewModel
+import ru.handh.school.igor.ui.screen.homepage.HomepageViewModel
 import ru.handh.school.igor.ui.screen.profile.ProfileViewModel
 import ru.handh.school.igor.ui.screen.signin.SignInViewModel
 
@@ -40,5 +41,8 @@ val appModule = module {
     }
     viewModel {
         AboutViewModel(get())
+    }
+    viewModel {
+        HomepageViewModel()
     }
 }

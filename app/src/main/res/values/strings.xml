@@ -13,4 +13,5 @@
     <string name="you_logged">Вы успешно вошли</string>
     <string name="error_occurred">Произошла ошибка</string>
     <string name="profile">Профиль</string>
+    <string name="projects">Проекты</string>
 </resources>

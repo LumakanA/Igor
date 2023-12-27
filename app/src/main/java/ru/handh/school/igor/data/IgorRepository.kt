@@ -3,6 +3,9 @@ package ru.handh.school.igor.data
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.ClientRequestException
+import io.ktor.client.plugins.auth.Auth
+import io.ktor.client.plugins.auth.providers.BearerTokens
+import io.ktor.client.plugins.auth.providers.bearer
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.get
 import io.ktor.client.request.header
@@ -40,6 +43,19 @@ class IgorRepository(
                 allowSpecialFloatingPointValues = true
                 useAlternativeNames = true
             })
+        }
+        install(Auth) {
+            bearer {
+                loadTokens {
+                    val accessToken = storage.accessToken ?: ""
+                    val refreshToken = storage.refreshToken ?: ""
+                    BearerTokens(accessToken, refreshToken)
+                }
+                refreshTokens {
+                    val token = postRefreshToken()
+                    token.data?.let { BearerTokens(it.accessToken, token.data.refreshToken) }
+                }
+            }
         }
     }
 
@@ -90,6 +106,7 @@ class IgorRepository(
 
             if (refreshToken != null) {
                 val response = client.post(ApiUrls.REFRESH_TOKEN) {
+
                     header("Authorization", "Bearer $refreshToken")
                     setBody(
                         TextContent(
