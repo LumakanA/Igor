@@ -26,6 +26,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import ru.handh.school.igor.R
+import ru.handh.school.igor.ui.components.AppButton
 import ru.handh.school.igor.ui.theme.AppTheme
 
 
@@ -99,6 +100,16 @@ private fun ProfileContent(
                     .fillMaxWidth()
                     .padding(AppTheme.offsets.medium)
             ) {
+                AppButton(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(AppTheme.offsets.medium),
+                    label = stringResource(R.string.exitButton),
+                    onClick = {
+                        onAction(ProfileViewAction.SubmitClicked)
+                    },
+                    backgroundColor = AppTheme.colors.red
+                )
             }
         }
     }

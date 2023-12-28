@@ -4,28 +4,28 @@ import android.util.Log
 import ru.handh.school.igor.data.DeviceIdProvider
 import ru.handh.school.igor.data.IgorRepository
 import ru.handh.school.igor.data.KeyValueStorage
-import ru.handh.school.igor.domain.Result
+import ru.handh.school.igor.domain.results.ResultAuth
 
 class SessionUseCase(
     private val igorRepository: IgorRepository,
     private val deviceIdProvider: DeviceIdProvider,
     private val keyValueStorage: KeyValueStorage
 ) {
-    suspend fun execute(code: String): Result<Unit> {
+    suspend fun execute(code: String): ResultAuth<Unit> {
         return try {
             val result = igorRepository.getSession(deviceIdProvider.deviceId, SessionResponse(code))
 
-            if (result is Result.ReceivedSession) {
+            if (result is ResultAuth.ReceivedSession) {
                 keyValueStorage.accessToken = result.data.toString()
                 Log.d("SessionUseCase", "Токен доступа сохранен: ${result.data}")
-                Result.ReceivedSession()
+                ResultAuth.ReceivedSession()
             } else {
                 Log.d("SessionUseCase", "UnknownError result received")
-                Result.UnknownError()
+                ResultAuth.UnknownError()
             }
         } catch (e: Exception) {
             Log.e("SessionUseCase", "Exception occurred: ${e.message}")
-            Result.UnknownError()
+            ResultAuth.UnknownError()
         }
     }
 }

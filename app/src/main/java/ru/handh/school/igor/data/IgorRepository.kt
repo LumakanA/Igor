@@ -1,12 +1,16 @@
 package ru.handh.school.igor.data
 
+import android.util.Log
 import io.ktor.client.HttpClient
-import io.ktor.client.engine.okhttp.OkHttp
+import io.ktor.client.call.body
+import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.ClientRequestException
-import io.ktor.client.plugins.auth.Auth
-import io.ktor.client.plugins.auth.providers.BearerTokens
-import io.ktor.client.plugins.auth.providers.bearer
+import io.ktor.client.plugins.DefaultRequest
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.plugins.logging.LogLevel
+import io.ktor.client.plugins.logging.Logger
+import io.ktor.client.plugins.logging.Logging
+import io.ktor.client.request.accept
 import io.ktor.client.request.get
 import io.ktor.client.request.header
 import io.ktor.client.request.headers
@@ -15,22 +19,21 @@ import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.bodyAsText
-import io.ktor.content.TextContent
 import io.ktor.http.ContentType
+import io.ktor.http.HttpHeaders
 import io.ktor.http.isSuccess
 import io.ktor.serialization.kotlinx.json.json
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import ru.handh.school.igor.data.session.Session
 import ru.handh.school.igor.data.session.SessionData
-import ru.handh.school.igor.domain.Result
+import ru.handh.school.igor.domain.results.ResultAuth
 import ru.handh.school.igor.domain.session.SessionResponse
 import ru.handh.school.igor.domain.signin.SignInRequest
 
 class IgorRepository(
     private val storage: KeyValueStorage
 ) : IgorRepositoryDataSource {
-    private val client = HttpClient(OkHttp) {
+    private val client = HttpClient(CIO) {
         install(ContentNegotiation) {
             json(Json {
                 encodeDefaults = true
@@ -44,30 +47,40 @@ class IgorRepository(
                 useAlternativeNames = true
             })
         }
-        install(Auth) {
-            bearer {
-                loadTokens {
-                    val accessToken = storage.accessToken ?: ""
-                    val refreshToken = storage.refreshToken ?: ""
-                    BearerTokens(accessToken, refreshToken)
-                }
-                refreshTokens {
-                    val token = postRefreshToken()
-                    token.data?.let { BearerTokens(it.accessToken, token.data.refreshToken) }
+        install(Logging) {
+            logger = object : Logger {
+                override fun log(message: String) {
+                    Log.v("Ktor", message)
                 }
             }
+            level = LogLevel.ALL
+        }
+//        install(Auth) {
+//            bearer {
+//                refreshTokens {
+//                    val tokens = client.post {
+//                        url(ApiUrls.REFRESH_TOKEN)
+//                        parameter("refreshToken", storage.refreshToken)
+//                        markAsRefreshTokenRequest()
+//                    }.body<SessionData>()
+//
+//                    BearerTokens(
+//                        accessToken = tokens.data.session.accessToken,
+//                        refreshToken = tokens.data.session.refreshToken
+//                    )
+//                }
+//            }
+//        }
+        install(DefaultRequest) {
+            header(HttpHeaders.ContentType, ContentType.Application.Json)
+            accept(ContentType.Application.Json)
         }
     }
 
     override suspend fun postSignIn(id: String, signInRequest: SignInRequest): HttpResponse {
-        val requestBody = TextContent(
-            text = Json.encodeToString(signInRequest),
-            contentType = ContentType.Application.Json
-        )
-
         return try {
             val response = client.post(ApiUrls.POST_SIGN_IN) {
-                setBody(requestBody)
+                setBody(signInRequest)
                 headers {
                     append("X-Device-Id", id)
                 }
@@ -78,7 +91,10 @@ class IgorRepository(
         }
     }
 
-    override suspend fun getSession(id: String, sessionResponse: SessionResponse): Result<Session> {
+    override suspend fun getSession(
+        id: String,
+        sessionResponse: SessionResponse
+    ): ResultAuth<Session> {
         return try {
             val response = client.get(ApiUrls.GET_SESSION) {
                 parameter("lifeTime", "5")
@@ -90,58 +106,27 @@ class IgorRepository(
                 val session = sessionData.data.session
                 storage.accessToken = session.accessToken
                 storage.refreshToken = session.refreshToken
-                Result.ReceivedSession(session)
+                ResultAuth.ReceivedSession(session)
             } else {
-                Result.UnknownError()
+                ResultAuth.UnknownError()
             }
         } catch (e: ClientRequestException) {
-            Result.UnknownError()
+            ResultAuth.UnknownError()
         }
     }
 
 
-    override suspend fun postRefreshToken(): Result<Session> {
-        return try {
-            val refreshToken = storage.refreshToken
-
-            if (refreshToken != null) {
-                val response = client.post(ApiUrls.REFRESH_TOKEN) {
-
-                    header("Authorization", "Bearer $refreshToken")
-                    setBody(
-                        TextContent(
-                            Json.encodeToString { "refreshToken" to refreshToken },
-                            ContentType.Application.Json
-                        )
-                    )
-                }
-                if (response.status.isSuccess()) {
-                    val sessionData = Json.decodeFromString<SessionData>(response.bodyAsText())
-                    val session = sessionData.data.session
-
-                    storage.accessToken = session.accessToken
-                    storage.refreshToken = session.refreshToken
-
-                    Result.ReceivedSession(session)
-                } else {
-                    Result.UnknownError()
-                }
-            } else {
-                Result.UnknownError()
-            }
-        } catch (e: ClientRequestException) {
-            Result.UnknownError()
-        }
+    override suspend fun postRefreshToken(refreshToken: String) {
     }
 
 
     override suspend fun postSignOut() {
         try {
-            val refreshToken = storage.refreshToken
+            val accessToken = storage.accessToken
 
-            if (refreshToken != null) {
+            if (accessToken != null) {
                 client.post(ApiUrls.POST_SIGN_OUT) {
-                    header("Authorization", "Bearer $refreshToken")
+                    header("Authorization", "Bearer $accessToken")
                 }
                 storage.accessToken = null
                 storage.refreshToken = null
@@ -152,13 +137,11 @@ class IgorRepository(
     }
 
     override suspend fun getProfile() {
-        try {
-            client.get(ApiUrls.GET_PROFILE) {
-                header("Authorization", "Bearer")
+        return client.get(ApiUrls.GET_PROFILE) {
+            headers {
+                append("Authorization", storage.accessToken ?: "")
             }
-        } catch (e: ClientRequestException) {
-            throw e
-        }
+        }.body()
     }
 
     override suspend fun getProjects() {

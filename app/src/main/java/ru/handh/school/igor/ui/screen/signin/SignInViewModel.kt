@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
-import ru.handh.school.igor.domain.Result
+import ru.handh.school.igor.domain.results.ResultAuth
 import ru.handh.school.igor.domain.session.SessionUseCase
 import ru.handh.school.igor.domain.signin.SignInUseCase
 import ru.handh.school.igor.ui.base.BaseViewModel
@@ -14,8 +14,8 @@ class SignInViewModel(
     private val signInUseCase: SignInUseCase,
     private val sessionUseCase: SessionUseCase
 ) : BaseViewModel<SignInState, SignInViewAction>(InitialSignInState) {
-    private val resultChannel = Channel<Result<Unit>>()
-    val codeResult = resultChannel.receiveAsFlow()
+    private val resultAuthChannel = Channel<ResultAuth<Unit>>()
+    val codeResult = resultAuthChannel.receiveAsFlow()
 
     override fun onAction(action: SignInViewAction) =
         when (action) {
@@ -34,9 +34,9 @@ class SignInViewModel(
                 }
                 try {
                     val resultSignIn = signInUseCase.execute(email)
-                    resultChannel.send(resultSignIn)
+                    resultAuthChannel.send(resultSignIn)
                     when (resultSignIn) {
-                        is Result.UserAuth -> {
+                        is ResultAuth.UserAuth -> {
                             reduceState {
                                 it.copy(
                                     showVerificationCodeInput = true,
@@ -45,14 +45,14 @@ class SignInViewModel(
                                 )
                             }
                         }
-                        is Result.UnknownError -> {
+                        is ResultAuth.UnknownError -> {
                             reduceState {
                                 it.copy(signInLoading = false)
                             }
                         }
 
-                        is Result.ReceivedSession -> {
-                            resultChannel.send(resultSignIn)
+                        is ResultAuth.ReceivedSession -> {
+                            resultAuthChannel.send(resultSignIn)
                         }
                     }
                 } catch (e: Exception) {
@@ -77,9 +77,9 @@ class SignInViewModel(
                 }
                 try {
                     val resultSession = sessionUseCase.execute(code)
-                    resultChannel.send(resultSession)
+                    resultAuthChannel.send(resultSession)
                     when (resultSession) {
-                        is Result.ReceivedSession -> {
+                        is ResultAuth.ReceivedSession -> {
                             reduceState {
                                 it.copy(
                                     showVerificationCodeInput = false,
@@ -88,14 +88,14 @@ class SignInViewModel(
                                 )
                             }
                         }
-                        is Result.UnknownError -> {
+                        is ResultAuth.UnknownError -> {
                             reduceState {
                                 it.copy(signInLoading = false)
                             }
                         }
 
-                        is Result.UserAuth -> {
-                            resultChannel.send(resultSession)
+                        is ResultAuth.UserAuth -> {
+                            resultAuthChannel.send(resultSession)
                         }
                     }
                 } catch (e: Exception) {

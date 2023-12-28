@@ -28,7 +28,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import ru.handh.school.igor.R
-import ru.handh.school.igor.domain.Result
+import ru.handh.school.igor.domain.results.ResultAuth
 import ru.handh.school.igor.ui.components.AppButton
 import ru.handh.school.igor.ui.components.AppTextField
 import ru.handh.school.igor.ui.theme.AppTheme
@@ -42,18 +42,18 @@ fun SignInScreen(
     LaunchedEffect(vm, context) {
         vm.codeResult.collect { result ->
             when (result) {
-                is Result.UserAuth -> {
+                is ResultAuth.UserAuth -> {
                     Log.d("SessionCollect", "UserAuth result received")
                     Toast.makeText(context, R.string.email_send, Toast.LENGTH_LONG).show()
                 }
 
-                is Result.ReceivedSession -> {
+                is ResultAuth.ReceivedSession -> {
                     Log.d("SessionCollect", "ReceivedSession result received")
                     Toast.makeText(context, R.string.you_logged, Toast.LENGTH_LONG).show()
                     navController.navigate("homepage")
                 }
 
-                is Result.UnknownError -> {
+                is ResultAuth.UnknownError -> {
                     Log.d("SessionCollect", "UnknownError result received")
                     Toast.makeText(context, R.string.error_occurred, Toast.LENGTH_LONG).show()
                 }

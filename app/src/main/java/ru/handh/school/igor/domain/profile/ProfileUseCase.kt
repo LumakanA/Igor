@@ -1,14 +1,14 @@
-package ru.handh.school.igor.domain.singout
+package ru.handh.school.igor.domain.profile
 
 import ru.handh.school.igor.data.IgorRepository
 import ru.handh.school.igor.domain.results.ResultAuth
 
-class SignOutUseCase(
-    private val igorRepository: IgorRepository
+class ProfileUseCase(
+    private val igorRepository: IgorRepository,
 ) {
     suspend fun execute(): ResultAuth<Unit> {
         return try {
-            igorRepository.postSignOut()
+            igorRepository.getProfile()
             ResultAuth.ReceivedSession()
         } catch (e: Exception) {
             ResultAuth.UnknownError()

@@ -2,6 +2,7 @@ package ru.handh.school.igor.data
 
 import android.content.Context
 import android.util.Log
+import io.ktor.client.plugins.auth.providers.BearerTokens
 
 private const val SharedPreferencesDefaultName = "app_preferences"
 
@@ -63,15 +64,10 @@ class KeyValueStorage(
             .putString(key, value)
             .apply()
     }
-//
-//    fun loadTokens(): BearerTokens {
-//        val accessToken = this.accessToken ?: throw IllegalStateException("Access Token is null")
-//        val refreshToken = this.refreshToken ?: throw IllegalStateException("Refresh Token is null")
-//        return BearerTokens(accessToken, refreshToken)
-//    }
-//
-//    fun refreshTokens(newAccessToken: String, newRefreshToken: String) {
-//        this.accessToken = newAccessToken
-//        this.refreshToken = newRefreshToken
-//    }
+
+    fun loadTokens(): BearerTokens {
+        val accessToken = this.accessToken
+        val refreshToken = this.refreshToken
+        return BearerTokens(accessToken.toString(), refreshToken.toString())
+    }
 }
