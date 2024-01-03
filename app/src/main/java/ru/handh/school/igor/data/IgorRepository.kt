@@ -3,9 +3,10 @@ package ru.handh.school.igor.data
 import android.util.Log
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
-import io.ktor.client.engine.cio.CIO
+import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.ClientRequestException
 import io.ktor.client.plugins.DefaultRequest
+import io.ktor.client.plugins.auth.Auth
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logger
@@ -21,19 +22,16 @@ import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
-import io.ktor.http.isSuccess
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
-import ru.handh.school.igor.data.session.Session
-import ru.handh.school.igor.data.session.SessionData
-import ru.handh.school.igor.domain.results.ResultAuth
-import ru.handh.school.igor.domain.session.SessionResponse
+import ru.handh.school.igor.domain.profile.getProfileResponse.ProfileData
+import ru.handh.school.igor.domain.session.getSessionResponce.SessionData
 import ru.handh.school.igor.domain.signin.SignInRequest
 
 class IgorRepository(
     private val storage: KeyValueStorage
 ) : IgorRepositoryDataSource {
-    private val client = HttpClient(CIO) {
+    private val client = HttpClient(OkHttp) {
         install(ContentNegotiation) {
             json(Json {
                 encodeDefaults = true
@@ -57,16 +55,18 @@ class IgorRepository(
         }
 //        install(Auth) {
 //            bearer {
+//                loadTokens {
+//                    BearerTokens(
+//                        storage.accessToken ?: "", storage.refreshToken ?: ""
+//                    )
+//                }
 //                refreshTokens {
-//                    val tokens = client.post {
-//                        url(ApiUrls.REFRESH_TOKEN)
-//                        parameter("refreshToken", storage.refreshToken)
+//                    val token = client.post(ApiUrls.REFRESH_TOKEN) {
 //                        markAsRefreshTokenRequest()
 //                    }.body<SessionData>()
-//
 //                    BearerTokens(
-//                        accessToken = tokens.data.session.accessToken,
-//                        refreshToken = tokens.data.session.refreshToken
+//                        accessToken = token.data?.session?.accessToken ?: "",
+//                        refreshToken = token.data?.session?.refreshToken ?: ""
 //                    )
 //                }
 //            }
@@ -93,26 +93,14 @@ class IgorRepository(
 
     override suspend fun getSession(
         id: String,
-        sessionResponse: SessionResponse
-    ): ResultAuth<Session> {
-        return try {
-            val response = client.get(ApiUrls.GET_SESSION) {
-                parameter("lifeTime", "5")
-                header("X-Device-Id", id)
-                header("X-OTP", sessionResponse.code)
-            }
-            if (response.status.isSuccess()) {
-                val sessionData = Json.decodeFromString<SessionData>(response.bodyAsText())
-                val session = sessionData.data.session
-                storage.accessToken = session.accessToken
-                storage.refreshToken = session.refreshToken
-                ResultAuth.ReceivedSession(session)
-            } else {
-                ResultAuth.UnknownError()
-            }
-        } catch (e: ClientRequestException) {
-            ResultAuth.UnknownError()
-        }
+        code: String
+    ): SessionData {
+        return client.get(ApiUrls.GET_SESSION) {
+            attributes.put(Auth.AuthCircuitBreaker, Unit)
+            parameter("lifeTime", "5")
+            header("X-Device-Id", id)
+            header("X-OTP", code)
+        }.body<SessionData>()
     }
 
 
@@ -122,27 +110,32 @@ class IgorRepository(
 
     override suspend fun postSignOut() {
         try {
-            val accessToken = storage.accessToken
-
-            if (accessToken != null) {
-                client.post(ApiUrls.POST_SIGN_OUT) {
-                    header("Authorization", "Bearer $accessToken")
-                }
-                storage.accessToken = null
-                storage.refreshToken = null
+            val accessToken = storage.accessToken ?: ""
+            client.post(ApiUrls.POST_SIGN_OUT) {
+                header("Authorization", "Bearer $accessToken")
             }
+            storage.accessToken = null
+            storage.refreshToken = null
         } catch (e: ClientRequestException) {
             throw e
         }
     }
 
-    override suspend fun getProfile() {
-        return client.get(ApiUrls.GET_PROFILE) {
-            headers {
-                append("Authorization", storage.accessToken ?: "")
-            }
-        }.body()
+    override suspend fun getProfile(): ProfileData {
+        val accessToken = storage.accessToken ?: ""
+        return try {
+            client.get(ApiUrls.GET_PROFILE) {
+                header("Authorization", "Bearer $accessToken")
+            }.also { response ->
+                Log.d("ResponseDebug", response.bodyAsText())
+            }.body<ProfileData>()
+        } catch (e: Exception) {
+            // Обработка ошибки
+            Log.e("ProfileRequest", "Error fetching profile: ${e.message}")
+            throw e
+        }
     }
+
 
     override suspend fun getProjects() {
         TODO("Not yet implemented")

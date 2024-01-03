@@ -13,16 +13,13 @@ class SessionUseCase(
 ) {
     suspend fun execute(code: String): ResultAuth<Unit> {
         return try {
-            val result = igorRepository.getSession(deviceIdProvider.deviceId, SessionResponse(code))
+            val result = igorRepository.getSession(deviceIdProvider.deviceId, code)
 
-            if (result is ResultAuth.ReceivedSession) {
-                keyValueStorage.accessToken = result.data.toString()
-                Log.d("SessionUseCase", "Токен доступа сохранен: ${result.data}")
-                ResultAuth.ReceivedSession()
-            } else {
-                Log.d("SessionUseCase", "UnknownError result received")
-                ResultAuth.UnknownError()
-            }
+            keyValueStorage.accessToken = result.data?.session?.accessToken
+            keyValueStorage.refreshToken = result.data?.session?.refreshToken
+//            Log.d("SessionUseCase", "Токен доступа сохранен: ${result.data}")
+            Log.d("SessionUseCase", "UnknownError result received")
+            ResultAuth.ReceivedSession()
         } catch (e: Exception) {
             Log.e("SessionUseCase", "Exception occurred: ${e.message}")
             ResultAuth.UnknownError()

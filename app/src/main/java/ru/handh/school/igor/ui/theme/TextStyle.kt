@@ -8,7 +8,8 @@ data class AppTextStyles(
     val text2: TextStyle,
     val text3: TextStyle,
     val text4: TextStyle,
-    val text5: TextStyle
+    val text5: TextStyle,
+    val text6: TextStyle
 )
 
 val defaultTextStyles = AppTextStyles(
@@ -30,6 +31,10 @@ val defaultTextStyles = AppTextStyles(
     ),
     text5 = TextStyle(
         fontSize = 14.sp,
+        lineHeight = 20.sp
+    ),
+    text6 = TextStyle(
+        fontSize = 20.sp,
         lineHeight = 20.sp
     )
 )

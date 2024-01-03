@@ -1,10 +1,13 @@
 package ru.handh.school.igor.di
 
+import androidx.room.Room
+import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 import ru.handh.school.igor.data.DeviceIdProvider
 import ru.handh.school.igor.data.IgorRepository
 import ru.handh.school.igor.data.KeyValueStorage
+import ru.handh.school.igor.data.database.MainDb
 import ru.handh.school.igor.domain.profile.ProfileUseCase
 import ru.handh.school.igor.domain.session.SessionUseCase
 import ru.handh.school.igor.domain.signin.SignInUseCase
@@ -24,6 +27,13 @@ val appModule = module {
     single {
         DeviceIdProvider(get())
     }
+    single {
+        Room.databaseBuilder(
+            androidContext(),
+            MainDb::class.java,
+            "main_database"
+        ).build()
+    }
 
     factory {
         SignInUseCase(get(), get())
@@ -41,7 +51,7 @@ val appModule = module {
         SignInViewModel(get(), get())
     }
     viewModel {
-        ProfileViewModel(get())
+        ProfileViewModel(get(), get())
     }
     viewModel {
         AboutViewModel(get())
