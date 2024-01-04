@@ -4,5 +4,5 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class ProfileWrapper(
-    val profile: Profile?
+    val profile: Profile
 )

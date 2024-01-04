@@ -12,7 +12,7 @@ import androidx.room.RoomDatabase
     version = 1
 )
 abstract class MainDb : RoomDatabase() {
-    abstract val dao: Dao
+    abstract val profileDao: ProfileDao
     companion object {
         fun createDatabase(context: Context): MainDb {
             return Room.databaseBuilder(context, MainDb::class.java, "profile.db").build()

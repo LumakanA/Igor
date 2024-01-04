@@ -4,7 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import ru.handh.school.igor.R
 
-@Entity
+@Entity(tableName = "ProfileEntity")
 data class ProfileEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Int? = null,

@@ -34,6 +34,9 @@ val appModule = module {
             "main_database"
         ).build()
     }
+    single {
+        get<MainDb>().profileDao
+    }
 
     factory {
         SignInUseCase(get(), get())
@@ -45,7 +48,7 @@ val appModule = module {
         SignOutUseCase(get())
     }
     factory {
-        ProfileUseCase(get())
+        ProfileUseCase(get(), get())
     }
     viewModel {
         SignInViewModel(get(), get())

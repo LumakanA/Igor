@@ -38,23 +38,23 @@ fun ProfileScreen(
     vm: ProfileViewModel,
     navController: NavController
 ) {
-    val itemsList = vm.itemsList.collectAsState(initial = emptyList())
     val state by vm.state.collectAsState()
+    val itemList by vm.itemsList.collectAsState(initial = emptyList())
     ProfileContent(
-        itemList = itemsList.value,
         state = state,
         onAction = vm::onAction,
-        navController = navController
+        navController = navController,
+        itemList = itemList
     )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ProfileContent(
-    itemList: List<ProfileEntity>,
     state: ProfileState,
     onAction: (ProfileViewAction) -> Unit = {},
-    navController: NavController
+    navController: NavController,
+    itemList: List<ProfileEntity>
 ) {
     Scaffold(
         topBar = {
@@ -105,7 +105,7 @@ private fun ProfileContent(
                     .padding(top = AppTheme.offsets.large)
                     .fillMaxSize()
             ) {
-                itemList.forEach { item ->
+                for (item in itemList) {
                     ListItem(item = item)
                 }
             }

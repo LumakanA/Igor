@@ -7,6 +7,8 @@ import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.ClientRequestException
 import io.ktor.client.plugins.DefaultRequest
 import io.ktor.client.plugins.auth.Auth
+import io.ktor.client.plugins.auth.providers.BearerTokens
+import io.ktor.client.plugins.auth.providers.bearer
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logger
@@ -19,7 +21,6 @@ import io.ktor.client.request.parameter
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.client.statement.HttpResponse
-import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
 import io.ktor.serialization.kotlinx.json.json
@@ -53,24 +54,29 @@ class IgorRepository(
             }
             level = LogLevel.ALL
         }
-//        install(Auth) {
-//            bearer {
-//                loadTokens {
-//                    BearerTokens(
-//                        storage.accessToken ?: "", storage.refreshToken ?: ""
-//                    )
-//                }
-//                refreshTokens {
-//                    val token = client.post(ApiUrls.REFRESH_TOKEN) {
-//                        markAsRefreshTokenRequest()
-//                    }.body<SessionData>()
-//                    BearerTokens(
-//                        accessToken = token.data?.session?.accessToken ?: "",
-//                        refreshToken = token.data?.session?.refreshToken ?: ""
-//                    )
-//                }
-//            }
-//        }
+        install(Auth) {
+            bearer {
+                loadTokens {
+                    BearerTokens(
+                        storage.accessToken ?: "", storage.refreshToken ?: ""
+                    )
+                }
+                refreshTokens {
+                    val token = client.post(ApiUrls.REFRESH_TOKEN) {
+                        setBody(mapOf("refreshToken" to storage.refreshToken))
+                        markAsRefreshTokenRequest()
+                    }.body<SessionData>()
+
+                    storage.accessToken = token.data?.session?.accessToken
+                    storage.refreshToken = token.data?.session?.refreshToken
+
+                    BearerTokens(
+                        accessToken = token.data?.session?.accessToken ?: "",
+                        refreshToken = token.data?.session?.refreshToken ?: ""
+                    )
+                }
+            }
+        }
         install(DefaultRequest) {
             header(HttpHeaders.ContentType, ContentType.Application.Json)
             accept(ContentType.Application.Json)
@@ -122,18 +128,10 @@ class IgorRepository(
     }
 
     override suspend fun getProfile(): ProfileData {
-        val accessToken = storage.accessToken ?: ""
-        return try {
-            client.get(ApiUrls.GET_PROFILE) {
-                header("Authorization", "Bearer $accessToken")
-            }.also { response ->
-                Log.d("ResponseDebug", response.bodyAsText())
-            }.body<ProfileData>()
-        } catch (e: Exception) {
-            // Обработка ошибки
-            Log.e("ProfileRequest", "Error fetching profile: ${e.message}")
-            throw e
-        }
+        return client.get(ApiUrls.GET_PROFILE) {
+            header("Authorization", "Bearer ${storage.accessToken}")
+            attributes.put(Auth.AuthCircuitBreaker, Unit)
+        }.body<ProfileData>()
     }
 
 

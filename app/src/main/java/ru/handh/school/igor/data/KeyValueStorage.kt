@@ -2,7 +2,6 @@ package ru.handh.school.igor.data
 
 import android.content.Context
 import android.util.Log
-import io.ktor.client.plugins.auth.providers.BearerTokens
 
 private const val SharedPreferencesDefaultName = "app_preferences"
 
@@ -63,11 +62,5 @@ class KeyValueStorage(
         prefs.edit()
             .putString(key, value)
             .apply()
-    }
-
-    fun loadTokens(): BearerTokens {
-        val accessToken = this.accessToken
-        val refreshToken = this.refreshToken
-        return BearerTokens(accessToken.toString(), refreshToken.toString())
     }
 }

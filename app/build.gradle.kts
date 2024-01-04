@@ -66,6 +66,7 @@ dependencies {
     implementation("io.insert-koin:koin-androidx-compose:3.4.6")
 
     implementation("androidx.navigation:navigation-compose:2.7.6")
+    implementation ("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2")
 
     implementation("io.ktor:ktor-client-json:2.3.7")
     implementation("io.ktor:ktor-client-serialization:2.3.7")
