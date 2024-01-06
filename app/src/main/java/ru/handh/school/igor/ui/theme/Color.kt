@@ -10,7 +10,9 @@ data class AppColors(
     val primaryDisabled: Color,
     val grey: Color,
     val red: Color,
-    val surface: Color
+    val surface: Color,
+    val lightSurface: Color,
+    val darkSurface: Color
 )
 
 val defaultColors = AppColors(
@@ -20,5 +22,7 @@ val defaultColors = AppColors(
     primaryDisabled = Color(0xFF62a0fd),
     grey = Color(0xFFC2C2C2),
     red = Color(0xFFDC3545),
-    surface = Color(0xFFFEF7FF)
+    surface = Color(0xFFFEF7FF),
+    lightSurface = Color(0xFFEADDFF),
+    darkSurface = Color(0xFF21005D)
 )

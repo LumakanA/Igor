@@ -1,11 +1,13 @@
 package ru.handh.school.igor.ui.screen.homepage
 
+import ru.handh.school.igor.domain.projects.getProjectsResponce.ProjectsData
+
 val InitialHomepageState = HomepageState(
-    accessToken = null,
-    aboutLoading = false
+    aboutLoading = false,
+    projects = emptyList()
 )
 
 data class HomepageState(
-    val accessToken: String?,
-    val aboutLoading: Boolean
+    val aboutLoading: Boolean,
+    val projects: List<ProjectsData>
 )

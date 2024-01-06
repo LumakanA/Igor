@@ -1,6 +1,5 @@
 package ru.handh.school.igor.ui.screen.homepage
 
-import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,13 +18,13 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import ru.handh.school.igor.R
+import ru.handh.school.igor.ui.components.ListProjectItem
 import ru.handh.school.igor.ui.theme.AppTheme
 
 
@@ -48,7 +47,6 @@ private fun HomepageContent(
     state: HomepageState,
     onAction: (HomepageViewAction) -> Unit = {},
     navController: NavController,
-    context: Context = LocalContext.current
 ) {
     Scaffold(
         topBar = {
@@ -89,6 +87,9 @@ private fun HomepageContent(
                     .fillMaxWidth()
                     .padding(AppTheme.offsets.medium)
             ) {
+                for (item in state.projects) {
+                    ListProjectItem(project = item)
+                }
             }
         }
     }

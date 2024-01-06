@@ -1,8 +1,9 @@
 package ru.handh.school.igor.domain.profile.getProfileResponse
 
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class ProfileWrapper(
-    val profile: Profile
+    @SerialName("profile") val profile: Profile?
 )

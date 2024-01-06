@@ -9,6 +9,7 @@ import ru.handh.school.igor.data.IgorRepository
 import ru.handh.school.igor.data.KeyValueStorage
 import ru.handh.school.igor.data.database.MainDb
 import ru.handh.school.igor.domain.profile.ProfileUseCase
+import ru.handh.school.igor.domain.projects.ProjectsUseCase
 import ru.handh.school.igor.domain.session.SessionUseCase
 import ru.handh.school.igor.domain.signin.SignInUseCase
 import ru.handh.school.igor.domain.singout.SignOutUseCase
@@ -50,6 +51,9 @@ val appModule = module {
     factory {
         ProfileUseCase(get(), get())
     }
+    factory {
+        ProjectsUseCase(get())
+    }
     viewModel {
         SignInViewModel(get(), get())
     }
@@ -60,6 +64,6 @@ val appModule = module {
         AboutViewModel(get())
     }
     viewModel {
-        HomepageViewModel()
+        HomepageViewModel(get())
     }
 }

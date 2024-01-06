@@ -7,8 +7,6 @@ import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.ClientRequestException
 import io.ktor.client.plugins.DefaultRequest
 import io.ktor.client.plugins.auth.Auth
-import io.ktor.client.plugins.auth.providers.BearerTokens
-import io.ktor.client.plugins.auth.providers.bearer
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logger
@@ -26,6 +24,7 @@ import io.ktor.http.HttpHeaders
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import ru.handh.school.igor.domain.profile.getProfileResponse.ProfileData
+import ru.handh.school.igor.domain.projects.getProjectsResponce.ProjectsData
 import ru.handh.school.igor.domain.session.getSessionResponce.SessionData
 import ru.handh.school.igor.domain.signin.SignInRequest
 
@@ -54,29 +53,30 @@ class IgorRepository(
             }
             level = LogLevel.ALL
         }
-        install(Auth) {
-            bearer {
-                loadTokens {
-                    BearerTokens(
-                        storage.accessToken ?: "", storage.refreshToken ?: ""
-                    )
-                }
-                refreshTokens {
-                    val token = client.post(ApiUrls.REFRESH_TOKEN) {
-                        setBody(mapOf("refreshToken" to storage.refreshToken))
-                        markAsRefreshTokenRequest()
-                    }.body<SessionData>()
-
-                    storage.accessToken = token.data?.session?.accessToken
-                    storage.refreshToken = token.data?.session?.refreshToken
-
-                    BearerTokens(
-                        accessToken = token.data?.session?.accessToken ?: "",
-                        refreshToken = token.data?.session?.refreshToken ?: ""
-                    )
-                }
-            }
-        }
+//        install(Auth) {
+//            bearer {
+//                loadTokens {
+//                    BearerTokens(
+//                        storage.accessToken ?: "", storage.refreshToken ?: ""
+//                    )
+//                }
+//                refreshTokens {
+//                    val token = client.post(ApiUrls.REFRESH_TOKEN) {
+//                        setBody(mapOf("refreshToken" to storage.refreshToken.toString()))
+//                        markAsRefreshTokenRequest()
+//                        attributes.put(Auth.AuthCircuitBreaker, Unit)
+//                    }.body<SessionData>()
+//
+//                    storage.accessToken = token.data?.session?.accessToken
+//                    storage.refreshToken = token.data?.session?.refreshToken
+//
+//                    BearerTokens(
+//                        accessToken = token.data?.session?.accessToken ?: "",
+//                        refreshToken = token.data?.session?.refreshToken ?: ""
+//                    )
+//                }
+//            }
+//        }
         install(DefaultRequest) {
             header(HttpHeaders.ContentType, ContentType.Application.Json)
             accept(ContentType.Application.Json)
@@ -110,7 +110,8 @@ class IgorRepository(
     }
 
 
-    override suspend fun postRefreshToken(refreshToken: String) {
+    override suspend fun postRefreshToken() {
+        TODO()
     }
 
 
@@ -128,15 +129,24 @@ class IgorRepository(
     }
 
     override suspend fun getProfile(): ProfileData {
-        return client.get(ApiUrls.GET_PROFILE) {
-            header("Authorization", "Bearer ${storage.accessToken}")
-            attributes.put(Auth.AuthCircuitBreaker, Unit)
-        }.body<ProfileData>()
+        try {
+            return client.get(ApiUrls.GET_PROFILE) {
+                header("Authorization", "Bearer ${storage.accessToken}")
+                attributes.put(Auth.AuthCircuitBreaker, Unit)
+            }.body<ProfileData>()
+        } catch (e: ClientRequestException) {
+            throw e
+        }
     }
 
 
-    override suspend fun getProjects() {
-        TODO("Not yet implemented")
+    override suspend fun getProjects(): List<ProjectsData> {
+        return listOf(client.get(ApiUrls.GET_PROJECTS) {
+            parameter("limit", "50")
+            parameter("offset", "100")
+            header("Authorization", "Bearer ${storage.accessToken}")
+            attributes.put(Auth.AuthCircuitBreaker, Unit)
+        }.body<ProjectsData>())
     }
 
     override suspend fun getNotifications() {
