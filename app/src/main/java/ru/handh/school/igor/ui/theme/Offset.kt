@@ -8,8 +8,7 @@ data class AppOffsets(
     val small: Dp,
     val medium: Dp,
     val large: Dp,
-    val huge: Dp,
-    val emailOffset: Dp,
+    val huge: Dp
 )
 
 val defaultOffsets = AppOffsets(
@@ -17,6 +16,5 @@ val defaultOffsets = AppOffsets(
     small = 12.dp,
     medium = 16.dp,
     large = 24.dp,
-    huge = 32.dp,
-    emailOffset = 19.dp
+    huge = 32.dp
 )

@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -26,12 +27,11 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import ru.handh.school.igor.R
 import ru.handh.school.igor.data.database.ProfileEntity
+import ru.handh.school.igor.ui.components.AppButton
 import ru.handh.school.igor.ui.components.ListItem
 import ru.handh.school.igor.ui.theme.AppTheme
 
-private val DefaultProgressIndicatorSize = 18.dp
-private val DefaultProgressIndicatorStrokeWidth = 2.dp
-private val DefaultTextOffset = 87.dp
+private val DefaultButtonOffset = 52.dp
 
 @Composable
 fun ProfileScreen(
@@ -100,11 +100,48 @@ private fun ProfileContent(
                 .background(color = AppTheme.colors.surface),
             contentAlignment = Alignment.TopCenter
         ) {
-            Column(
-                modifier = Modifier
-                    .padding(top = AppTheme.offsets.large)
-                    .fillMaxSize()
-            ) {
+            if (state.error) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(color = AppTheme.colors.surface),
+                    contentAlignment = Alignment.TopCenter
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 200.dp)
+                            .align(Alignment.TopCenter),
+                    ) {
+                        BasicText(
+                            modifier = Modifier.align(Alignment.CenterHorizontally),
+                            text = stringResource(R.string.something_went_wrong),
+                            style = AppTheme.textStyles.text8
+                        )
+                        BasicText(
+                            modifier = Modifier
+                                .padding(top = AppTheme.offsets.large, bottom = DefaultButtonOffset)
+                                .align(Alignment.CenterHorizontally),
+                            text = state.errorMessage
+                                ?: stringResource(R.string.unknown_error_has_occurred),
+                            style = AppTheme.textStyles.text9
+                        )
+                        AppButton(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(AppTheme.offsets.medium),
+                            label = stringResource(R.string.retry),
+                            loading = state.profileLoading,
+                            onClick = {
+                                onAction(ProfileViewAction.SubmitClicked)
+                            },
+                            backgroundColor = AppTheme.colors.red
+                        )
+                    }
+                }
+            } else if (state.profileLoading) {
+                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+            } else {
                 for (item in itemList) {
                     ListItem(item = item)
                 }

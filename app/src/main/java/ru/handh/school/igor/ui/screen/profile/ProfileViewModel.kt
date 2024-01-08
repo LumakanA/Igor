@@ -28,17 +28,52 @@ class ProfileViewModel(
     private fun onSubmitClicked() {
         viewModelScope.launch {
             try {
-                val profileData = profileUseCase.execute()
-                val profile = profileData.data?.profile
-                profile?.let {
-                    val profileEntity = ProfileEntity(
-                        name = it.name ?: "",
-                        surname = it.surname ?: ""
+                reduceState {
+                    it.copy(
+                        profileLoading = true,
+                        profileButtonLoading = true,
+                        error = false,
+                        errorMessage = null
                     )
-                    database.profileDao.insertProfile(profileEntity)
                 }
+                profileUseCase.execute()
+                reduceState {
+                    it.copy(
+                        profileLoading = false,
+                        profileButtonLoading = false,
+                        error = true,
+                        errorMessage = null
+                        //TODO()
+                    )
+                }
+//                if (profileData.isNullOrEmpty()) {
+//                    reduceState {
+//                        it.copy(
+//                            error = true,
+//                            profileLoading = false,
+//                            profileButtonLoading = false
+//                        )
+//                    }
+//                } else {
+//                    reduceState {
+//                        it.copy(
+//                            profileData = profileData,
+//                            profileLoading = false,
+//                            profileButtonLoading = false,
+//                            error = false,
+//                            errorMessage = null
+//                        )
+//                    }
+//                }
             } catch (e: Exception) {
-                e.printStackTrace()
+                reduceState {
+                    it.copy(
+                        error = true,
+                        profileLoading = false,
+                        profileButtonLoading = false,
+                        errorMessage = e.message
+                    )
+                }
             }
         }
     }

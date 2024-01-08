@@ -141,12 +141,12 @@ class IgorRepository(
 
 
     override suspend fun getProjects(): List<ProjectsData> {
-        return listOf(client.get(ApiUrls.GET_PROJECTS) {
+        return client.get(ApiUrls.GET_PROJECTS) {
             parameter("limit", "50")
             parameter("offset", "100")
             header("Authorization", "Bearer ${storage.accessToken}")
             attributes.put(Auth.AuthCircuitBreaker, Unit)
-        }.body<ProjectsData>())
+        }.body<List<ProjectsData>>()
     }
 
     override suspend fun getNotifications() {

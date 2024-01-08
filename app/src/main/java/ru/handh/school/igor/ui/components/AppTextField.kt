@@ -26,6 +26,7 @@ import ru.handh.school.igor.ui.theme.AppTheme
 
 private val DefaultContainerHeight = 56.dp
 private val DefaultBorderSize = 1.dp
+private val DefaultEmailOffset = 19.dp
 
 @Composable
 fun AppTextField(
@@ -59,7 +60,7 @@ fun AppTextField(
                     .background(AppTheme.colors.surfaceBright)
                     .padding(
                         vertical = AppTheme.offsets.small,
-                        horizontal = AppTheme.offsets.emailOffset
+                        horizontal = DefaultEmailOffset
                     ),
                 contentAlignment = Alignment.CenterStart
             ) {

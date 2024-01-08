@@ -14,4 +14,8 @@
     <string name="error_occurred">Произошла ошибка</string>
     <string name="profile">Профиль</string>
     <string name="projects">Проекты</string>
+    <string name="something_went_wrong">Что-то пошло не так</string>
+    <string name="retry">Повторить</string>
+    <string name="server_returned_empty_list">Сервер вернул пустой список проектов</string>
+    <string name="unknown_error_has_occurred">Произошла неизвестная ошибка</string>
 </resources>

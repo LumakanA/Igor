@@ -1,9 +1,19 @@
 package ru.handh.school.igor.ui.screen.profile
 
+import ru.handh.school.igor.data.database.ProfileEntity
+
 val InitialProfileState = ProfileState(
-    profileLoading = false
+    profileButtonLoading = false,
+    profileLoading = false,
+    error = false,
+    errorMessage = null,
+    itemList = null
 )
 
 data class ProfileState(
-    val profileLoading: Boolean
+    val profileButtonLoading: Boolean,
+    val profileLoading: Boolean,
+    val error: Boolean,
+    val errorMessage: String?,
+    val itemList: List<ProfileEntity>?
 )
