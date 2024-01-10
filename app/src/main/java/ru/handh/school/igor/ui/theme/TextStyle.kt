@@ -1,10 +1,13 @@
 package ru.handh.school.igor.ui.theme
 
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.sp
+import ru.handh.school.igor.R
 
 data class AppTextStyles(
-    val text1: TextStyle,
+    val buttonText: TextStyle,
     val text2: TextStyle,
     val text3: TextStyle,
     val text4: TextStyle,
@@ -16,13 +19,15 @@ data class AppTextStyles(
 )
 
 val defaultTextStyles = AppTextStyles(
-    text1 = TextStyle(
-        fontSize = 14.sp,
-        lineHeight = 22.sp
+    buttonText = TextStyle(
+        fontSize = 16.sp,
+        lineHeight = 20.sp,
+        fontFamily = FontFamily(Font(R.font.roboto_500))
     ),
     text2 = TextStyle(
         fontSize = 32.sp,
         lineHeight = 20.sp,
+        fontFamily = FontFamily(Font(R.font.roboto_500))
     ),
     text3 = TextStyle(
         fontSize = 22.sp,
@@ -38,7 +43,8 @@ val defaultTextStyles = AppTextStyles(
     ),
     text6 = TextStyle(
         fontSize = 20.sp,
-        lineHeight = 20.sp
+        lineHeight = 20.sp,
+        fontFamily = FontFamily(Font(R.font.roboto_400))
     ),
     text7 = TextStyle(
         fontSize = 16.sp,

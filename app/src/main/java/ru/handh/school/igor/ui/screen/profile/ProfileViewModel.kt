@@ -11,10 +11,12 @@ import ru.handh.school.igor.ui.base.BaseViewModel
 class ProfileViewModel(
     private val profileUseCase: ProfileUseCase,
     private val database: MainDb
-) :
-    BaseViewModel<ProfileState, ProfileViewAction>(InitialProfileState) {
+) : BaseViewModel<ProfileState, ProfileViewAction>(InitialProfileState) {
+
     init {
-        onSubmitClicked()
+        viewModelScope.launch {
+            onSubmitClicked()
+        }
     }
 
     override fun onAction(action: ProfileViewAction) {
@@ -36,35 +38,17 @@ class ProfileViewModel(
                         errorMessage = null
                     )
                 }
+
+                database.profileDao.deleteAll()
                 profileUseCase.execute()
                 reduceState {
                     it.copy(
                         profileLoading = false,
                         profileButtonLoading = false,
-                        error = true,
+                        error = false,
                         errorMessage = null
-                        //TODO()
                     )
                 }
-//                if (profileData.isNullOrEmpty()) {
-//                    reduceState {
-//                        it.copy(
-//                            error = true,
-//                            profileLoading = false,
-//                            profileButtonLoading = false
-//                        )
-//                    }
-//                } else {
-//                    reduceState {
-//                        it.copy(
-//                            profileData = profileData,
-//                            profileLoading = false,
-//                            profileButtonLoading = false,
-//                            error = false,
-//                            errorMessage = null
-//                        )
-//                    }
-//                }
             } catch (e: Exception) {
                 reduceState {
                     it.copy(
@@ -78,3 +62,5 @@ class ProfileViewModel(
         }
     }
 }
+
+

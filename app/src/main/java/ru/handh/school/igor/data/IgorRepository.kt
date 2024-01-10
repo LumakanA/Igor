@@ -7,6 +7,8 @@ import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.ClientRequestException
 import io.ktor.client.plugins.DefaultRequest
 import io.ktor.client.plugins.auth.Auth
+import io.ktor.client.plugins.auth.providers.BearerTokens
+import io.ktor.client.plugins.auth.providers.bearer
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logger
@@ -53,30 +55,29 @@ class IgorRepository(
             }
             level = LogLevel.ALL
         }
-//        install(Auth) {
-//            bearer {
-//                loadTokens {
-//                    BearerTokens(
-//                        storage.accessToken ?: "", storage.refreshToken ?: ""
-//                    )
-//                }
-//                refreshTokens {
-//                    val token = client.post(ApiUrls.REFRESH_TOKEN) {
-//                        setBody(mapOf("refreshToken" to storage.refreshToken.toString()))
-//                        markAsRefreshTokenRequest()
-//                        attributes.put(Auth.AuthCircuitBreaker, Unit)
-//                    }.body<SessionData>()
-//
-//                    storage.accessToken = token.data?.session?.accessToken
-//                    storage.refreshToken = token.data?.session?.refreshToken
-//
-//                    BearerTokens(
-//                        accessToken = token.data?.session?.accessToken ?: "",
-//                        refreshToken = token.data?.session?.refreshToken ?: ""
-//                    )
-//                }
-//            }
-//        }
+        install(Auth) {
+            bearer {
+                loadTokens {
+                    BearerTokens(
+                        storage.accessToken ?: "", storage.refreshToken ?: ""
+                    )
+                }
+                refreshTokens {
+                    val token = client.post(ApiUrls.REFRESH_TOKEN) {
+                        markAsRefreshTokenRequest()
+                        setBody(mapOf("refreshToken" to storage.refreshToken))
+                    }.body<SessionData>()
+
+                    storage.accessToken = token.data?.session?.accessToken
+                    storage.refreshToken = token.data?.session?.refreshToken
+
+                    BearerTokens(
+                        accessToken = token.data?.session?.accessToken ?: "",
+                        refreshToken = token.data?.session?.refreshToken ?: ""
+                    )
+                }
+            }
+        }
         install(DefaultRequest) {
             header(HttpHeaders.ContentType, ContentType.Application.Json)
             accept(ContentType.Application.Json)
@@ -117,9 +118,8 @@ class IgorRepository(
 
     override suspend fun postSignOut() {
         try {
-            val accessToken = storage.accessToken ?: ""
             client.post(ApiUrls.POST_SIGN_OUT) {
-                header("Authorization", "Bearer $accessToken")
+                attributes.put(Auth.AuthCircuitBreaker, Unit)
             }
             storage.accessToken = null
             storage.refreshToken = null
@@ -131,8 +131,6 @@ class IgorRepository(
     override suspend fun getProfile(): ProfileData {
         try {
             return client.get(ApiUrls.GET_PROFILE) {
-                header("Authorization", "Bearer ${storage.accessToken}")
-                attributes.put(Auth.AuthCircuitBreaker, Unit)
             }.body<ProfileData>()
         } catch (e: ClientRequestException) {
             throw e
@@ -144,8 +142,6 @@ class IgorRepository(
         return client.get(ApiUrls.GET_PROJECTS) {
             parameter("limit", "50")
             parameter("offset", "100")
-            header("Authorization", "Bearer ${storage.accessToken}")
-            attributes.put(Auth.AuthCircuitBreaker, Unit)
         }.body<List<ProjectsData>>()
     }
 

@@ -13,6 +13,7 @@ import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import ru.handh.school.igor.domain.projects.getProjectsResponce.ProjectsData
 import ru.handh.school.igor.ui.theme.AppTheme
@@ -71,11 +72,15 @@ fun ListProjectItem(
                         modifier = Modifier
                             .padding(bottom = 5.dp),
                         text = firstProject.name ?: "",
-                        style = AppTheme.textStyles.text7
+                        style = AppTheme.textStyles.text7,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
                     )
                     BasicText(
                         text = firstProject.description ?: "",
-                        style = AppTheme.textStyles.text5
+                        style = AppTheme.textStyles.text5,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
                     )
                 }
             }

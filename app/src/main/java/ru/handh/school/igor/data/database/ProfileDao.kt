@@ -13,4 +13,14 @@ interface ProfileDao {
 
     @Query("SELECT * FROM ProfileEntity")
     fun getProfile(): Flow<List<ProfileEntity>>
+
+    @Query("DELETE FROM ProfileEntity")
+    suspend fun deleteAll()
+
+    @Query("DELETE FROM ProfileEntity WHERE id = :profileId")
+    suspend fun deleteProfileById(profileId: Int)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun replaceProfile(profile: ProfileEntity)
 }
+

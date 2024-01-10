@@ -66,7 +66,7 @@ dependencies {
     implementation("io.insert-koin:koin-androidx-compose:3.4.6")
 
     implementation("androidx.navigation:navigation-compose:2.7.6")
-    implementation ("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2")
 
     implementation("io.ktor:ktor-client-json:2.3.7")
     implementation("io.ktor:ktor-client-serialization:2.3.7")
@@ -79,6 +79,7 @@ dependencies {
     implementation("io.ktor:ktor-client-logging:2.3.7")
     implementation("io.ktor:ktor-client-cio:2.3.7")
 
+    implementation("androidx.compose.material:material:1.5.4")
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
     implementation("androidx.activity:activity-compose:1.8.2")

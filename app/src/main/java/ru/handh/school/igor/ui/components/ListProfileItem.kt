@@ -11,6 +11,7 @@ import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ru.handh.school.igor.R
@@ -42,12 +43,16 @@ fun ListItem(
 
                 BasicText(
                     text = item.name,
-                    style = AppTheme.textStyles.text2
+                    style = AppTheme.textStyles.text2,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
                 BasicText(
                     modifier = Modifier.padding(top = 8.dp),
                     text = item.surname,
-                    style = AppTheme.textStyles.text6
+                    style = AppTheme.textStyles.text6,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
             }
         }
@@ -57,6 +62,7 @@ fun ListItem(
 @Preview
 @Composable
 fun ListItemPreview() {
-    val previewItem = ProfileEntity(name = "John", surname = "Doe")
+    val previewItem =
+        ProfileEntity(name = "Johnnnnnnnnnnnnnnnnnnnnn", surname = "Doeeeeeeeeeeeeeeeeeee")
     ListItem(previewItem)
 }

@@ -7,7 +7,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.BasicText
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -17,6 +23,9 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -38,27 +47,36 @@ fun ProfileScreen(
     vm: ProfileViewModel,
     navController: NavController
 ) {
+
     val state by vm.state.collectAsState()
     val itemList by vm.itemsList.collectAsState(initial = emptyList())
+
     ProfileContent(
         state = state,
         onAction = vm::onAction,
         navController = navController,
-        itemList = itemList
+        itemList = itemList,
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
 private fun ProfileContent(
     state: ProfileState,
     onAction: (ProfileViewAction) -> Unit = {},
     navController: NavController,
-    itemList: List<ProfileEntity>
+    itemList: List<ProfileEntity>,
 ) {
+    val isRefreshing by remember { mutableStateOf(false) }
+    val pullRefreshState = rememberPullRefreshState(
+        refreshing = isRefreshing,
+        onRefresh = { onAction(ProfileViewAction.SubmitClicked) }
+    )
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
+                modifier = Modifier
+                    .background(color = AppTheme.colors.surfaceBright),
                 title = {
                     BasicText(
                         modifier = Modifier
@@ -88,16 +106,16 @@ private fun ProfileContent(
                         )
                     }
                 },
-                modifier = Modifier
-                    .background(color = AppTheme.colors.surfaceBright),
-            )
+
+                )
         }
     ) { innerPadding ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .background(color = AppTheme.colors.surface),
+                .background(color = AppTheme.colors.surface)
+                .pullRefresh(pullRefreshState),
             contentAlignment = Alignment.TopCenter
         ) {
             if (state.error) {
@@ -142,10 +160,18 @@ private fun ProfileContent(
             } else if (state.profileLoading) {
                 CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
             } else {
-                for (item in itemList) {
-                    ListItem(item = item)
+                LazyColumn(modifier = Modifier.padding(top = AppTheme.offsets.large)) {
+                    items(itemList) { item ->
+                        ListItem(item = item)
+                    }
                 }
+
             }
+            PullRefreshIndicator(
+                refreshing = state.profileLoading,
+                state = pullRefreshState,
+                modifier = Modifier.align(Alignment.TopCenter),
+            )
         }
     }
 }
