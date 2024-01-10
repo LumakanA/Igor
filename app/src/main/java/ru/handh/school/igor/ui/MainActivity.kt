@@ -16,6 +16,7 @@ import org.koin.android.ext.android.inject
 import org.koin.androidx.compose.koinViewModel
 import ru.handh.school.igor.R
 import ru.handh.school.igor.data.KeyValueStorage
+import ru.handh.school.igor.ui.navigation.Screen
 import ru.handh.school.igor.ui.screen.about.AboutScreen
 import ru.handh.school.igor.ui.screen.homepage.HomepageScreen
 import ru.handh.school.igor.ui.screen.profile.ProfileScreen
@@ -78,36 +79,36 @@ class MainActivity : ComponentActivity() {
             AppTheme {
                 val navController = rememberNavController()
 
-                NavHost(navController = navController, startDestination = "start") {
-                    composable("start") {
+                NavHost(navController = navController, startDestination = Screen.Start.route) {
+                    composable(Screen.Start.route) {
                         if (storage.accessToken != null) {
                             HomepageScreen(
-                                vm = koinViewModel(),
-                                navController = navController,
-                                this@MainActivity
+                                vm = koinViewModel(), navController = navController,
+                                context = this@MainActivity
                             )
                         } else {
                             SignInScreen(
-                                vm = koinViewModel(),
-                                navController = navController,
-                                this@MainActivity
+                                vm = koinViewModel(), navController = navController,
+                                context = this@MainActivity
                             )
                         }
                     }
-                    composable("signIn") {
+                    composable(Screen.SignIn.route) {
                         SignInScreen(
-                            vm = koinViewModel(),
-                            navController = navController,
-                            this@MainActivity
+                            vm = koinViewModel(), navController = navController,
+                            context = this@MainActivity
                         )
                     }
-                    composable("homepage") {
-                        HomepageScreen(vm = koinViewModel(), navController = navController, this@MainActivity)
+                    composable(Screen.Homepage.route) {
+                        HomepageScreen(
+                            vm = koinViewModel(), navController = navController,
+                            context = this@MainActivity
+                        )
                     }
-                    composable("profile") {
+                    composable(Screen.Profile.route) {
                         ProfileScreen(vm = koinViewModel(), navController = navController)
                     }
-                    composable("about") {
+                    composable(Screen.About.route) {
                         AboutScreen(vm = koinViewModel(), navController = navController)
                     }
                 }
