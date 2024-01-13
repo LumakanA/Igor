@@ -22,7 +22,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -73,9 +72,8 @@ private fun SignInContent(
     state: SignInState,
     onAction: (SignInViewAction) -> Unit = {},
 ) {
-    val quarterScreenHeight = with(LocalDensity.current) {
-        (LocalConfiguration.current.screenHeightDp.dp / 8)
-    }
+    val quarterScreenHeight = LocalConfiguration.current.screenHeightDp.dp / 8
+
     Scaffold { containerPadding ->
         Box(
             modifier = Modifier
@@ -90,7 +88,7 @@ private fun SignInContent(
                     .padding(horizontal = AppTheme.offsets.medium)
                     .verticalScroll(rememberScrollState()) /* работает не так как надо
                      * элементы уходят за невидимую границу
-                     * последний элемент обрезается */
+                     * последний элемент обрезается TODO() */
             ) {
                 BasicText(
                     modifier = Modifier.padding(bottom = AppTheme.offsets.huge),

@@ -1,6 +1,6 @@
 package ru.handh.school.igor.ui.screen.homepage
 
-import ru.handh.school.igor.domain.projects.getProjectsResponce.ProjectsData
+import ru.handh.school.igor.domain.projects.getProjectsResponce.Projects
 
 val InitialHomepageState = HomepageState(
     homepageLoading = false,
@@ -15,5 +15,5 @@ data class HomepageState(
     val homepageButtonLoading: Boolean,
     val error: Boolean,
     val errorMessage: String?,
-    val projects: List<ProjectsData>
+    val projects: List<Projects>
 )

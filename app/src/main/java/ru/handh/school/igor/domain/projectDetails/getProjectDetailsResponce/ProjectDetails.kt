@@ -1,11 +1,10 @@
-package ru.handh.school.igor.domain.projects.getProjectsResponce
+package ru.handh.school.igor.domain.projectDetails.getProjectDetailsResponce
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class Projects(
-    @SerialName("id") val id: String?,
+class ProjectDetails(
     @SerialName("name") val name: String?,
     @SerialName("description") val description: String?
 )

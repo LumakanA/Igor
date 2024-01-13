@@ -111,6 +111,9 @@ class MainActivity : ComponentActivity() {
                     composable(Screen.About.route) {
                         AboutScreen(vm = koinViewModel(), navController = navController)
                     }
+                    composable(Screen.ProjectDetails.route) {
+                        AboutScreen(vm = koinViewModel(), navController = navController)
+                    }
                 }
             }
         }

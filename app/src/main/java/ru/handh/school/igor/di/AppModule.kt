@@ -5,10 +5,11 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 import ru.handh.school.igor.data.DeviceIdProvider
-import ru.handh.school.igor.data.IgorRepository
+import ru.handh.school.igor.data.IgorRepositoryImp
 import ru.handh.school.igor.data.KeyValueStorage
 import ru.handh.school.igor.data.database.MainDb
 import ru.handh.school.igor.domain.profile.ProfileUseCase
+import ru.handh.school.igor.domain.projectDetails.ProjectDetailsUseCase
 import ru.handh.school.igor.domain.projects.ProjectsUseCase
 import ru.handh.school.igor.domain.session.SessionUseCase
 import ru.handh.school.igor.domain.signin.SignInUseCase
@@ -23,7 +24,7 @@ val appModule = module {
         KeyValueStorage(get())
     }
     single {
-        IgorRepository(get())
+        IgorRepositoryImp(get())
     }
     single {
         DeviceIdProvider(get())
@@ -40,10 +41,10 @@ val appModule = module {
     }
 
     factory {
-        SignInUseCase(get(), get())
+        SignInUseCase(get())
     }
     factory {
-        SessionUseCase(get(), get(), get())
+        SessionUseCase(get(), get())
     }
     factory {
         SignOutUseCase(get())
@@ -53,6 +54,9 @@ val appModule = module {
     }
     factory {
         ProjectsUseCase(get())
+    }
+    factory {
+        ProjectDetailsUseCase(get())
     }
     viewModel {
         SignInViewModel(get(), get())
@@ -64,6 +68,6 @@ val appModule = module {
         AboutViewModel(get())
     }
     viewModel {
-        HomepageViewModel(get())
+        HomepageViewModel(get(), get())
     }
 }

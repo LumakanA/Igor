@@ -25,7 +25,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -37,7 +36,7 @@ import androidx.navigation.compose.rememberNavController
 import ru.handh.school.igor.R
 import ru.handh.school.igor.data.database.ProfileEntity
 import ru.handh.school.igor.ui.components.AppButton
-import ru.handh.school.igor.ui.components.ListItem
+import ru.handh.school.igor.ui.components.ListProfileItem
 import ru.handh.school.igor.ui.theme.AppTheme
 
 private val DefaultButtonOffset = 52.dp
@@ -106,8 +105,7 @@ private fun ProfileContent(
                         )
                     }
                 },
-
-                )
+            )
         }
     ) { innerPadding ->
         Box(
@@ -162,10 +160,9 @@ private fun ProfileContent(
             } else {
                 LazyColumn(modifier = Modifier.padding(top = AppTheme.offsets.large)) {
                     items(itemList) { item ->
-                        ListItem(item = item)
+                        ListProfileItem(item = item)
                     }
                 }
-
             }
             PullRefreshIndicator(
                 refreshing = state.profileLoading,

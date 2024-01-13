@@ -42,7 +42,11 @@ fun AppButton(
                 if (enabled) backgroundColor else AppTheme.colors.primaryDisabled
             )
             .height(DefaultContainerHeight)
-            .clickable { if (enabled) onClick() }
+            .clickable(enabled = enabled) {
+                if (enabled) {
+                    onClick()
+                }
+            }
             .padding(horizontal = AppTheme.offsets.medium),
         contentAlignment = Alignment.Center
     ) {

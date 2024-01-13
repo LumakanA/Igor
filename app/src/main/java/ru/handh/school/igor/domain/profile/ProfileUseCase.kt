@@ -1,16 +1,16 @@
 package ru.handh.school.igor.domain.profile
 
-import ru.handh.school.igor.data.IgorRepository
+import ru.handh.school.igor.data.IgorRepositoryImp
 import ru.handh.school.igor.data.database.ProfileDao
 import ru.handh.school.igor.data.database.ProfileEntity
 
 class ProfileUseCase(
-    private val igorRepository: IgorRepository,
+    private val igorRepositoryImp: IgorRepositoryImp,
     private val profileDao: ProfileDao
 ) {
     suspend fun execute() {
         try {
-            val profileData = igorRepository.getProfile()
+            val profileData = igorRepositoryImp.getProfile()
             val profile = profileData.data?.profile
             if (profile != null) {
                 val profileEntity = ProfileEntity(

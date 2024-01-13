@@ -14,16 +14,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import ru.handh.school.igor.domain.projects.getProjectsResponce.ProjectsData
+import ru.handh.school.igor.domain.projects.getProjectsResponce.Projects
 import ru.handh.school.igor.ui.theme.AppTheme
 
 private val DefaultIconProjectSize = 40.dp
+private val ProjectTextPadding = 5.dp
 
 @Composable
-fun ProfileIconWithLetter(
-    letter: String,
-    onClick: () -> Unit = {},
+fun ProjectIconWithLetter(
+    letter: String
 ) {
     Box(
         modifier = Modifier
@@ -31,8 +32,7 @@ fun ProfileIconWithLetter(
             .background(
                 color = AppTheme.colors.lightSurface,
                 shape = CircleShape
-            )
-            .clickable { onClick() },
+            ),
         contentAlignment = Alignment.Center
     ) {
         BasicText(
@@ -44,7 +44,7 @@ fun ProfileIconWithLetter(
 
 @Composable
 fun ListProjectItem(
-    project: ProjectsData,
+    project: Projects,
     onClick: () -> Unit = {}
 ) {
     Box(
@@ -58,54 +58,63 @@ fun ListProjectItem(
             .clickable { onClick() }
     ) {
         Row {
-            val firstProject = project.data?.projects?.firstOrNull()
-            if (firstProject != null) {
-                ProfileIconWithLetter(letter = firstProject.name?.take(1) ?: "")
-                Column(
+            ProjectIconWithLetter(letter = project.name?.take(1).orEmpty())
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(
+                        start = AppTheme.offsets.medium,
+                    )
+            ) {
+                BasicText(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(
-                            start = AppTheme.offsets.medium,
-                        )
-                ) {
-                    BasicText(
-                        modifier = Modifier
-                            .padding(bottom = 5.dp),
-                        text = firstProject.name ?: "",
-                        style = AppTheme.textStyles.text7,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                    BasicText(
-                        text = firstProject.description ?: "",
-                        style = AppTheme.textStyles.text5,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                }
+                        .padding(bottom = ProjectTextPadding),
+                    text = project.name.orEmpty(),
+                    style = AppTheme.textStyles.text7,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+                BasicText(
+                    text = project.description.orEmpty(),
+                    style = AppTheme.textStyles.text5,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis
+                )
             }
         }
     }
 }
 
 
-//@Preview
-//@Composable
-//fun ListProjectItemPreview() {
-//    val fakeProject = Projects(name = "Проект 1", description = "Описание для проекта, может занимать несколько строчек")
-//    ListProjectItem(project = fakeProject)
-//}
-//
-//@Preview
-//@Composable
-//fun ListProjectItemPreview1() {
-//    val fakeProject = Projects(name = "Название 1", description = "Описание для проекта, может занимать несколько строчекОписание для проекта, может занимать несколько строчекОписание для проекта, может занимать несколько строчек")
-//    ListProjectItem(project = fakeProject)
-//}
-//
-//@Preview
-//@Composable
-//fun ListProjectItemPreview2() {
-//    val fakeProject = Projects(name = "Sadasdasd", description = "sadasdasfdsgfdgfdsgjkfdshjgdsfjgjkfdshkjghjkdfgdflsghsghdjlfhlkgdfslhkghldfkjskhjlsdfghjklsdfgkjhlgfds")
-//    ListProjectItem(project = fakeProject)
-//}
+@Preview
+@Composable
+fun ListProjectItemPreview() {
+    val fakeProject = Projects(
+        id = "1",
+        name = "Проект 1",
+        description = "Описание для проекта, может занимать несколько строчек"
+    )
+    ListProjectItem(project = fakeProject)
+}
+
+@Preview
+@Composable
+fun ListProjectItemPreview1() {
+    val fakeProject = Projects(
+        id = "2",
+        name = "Название 1",
+        description = "Описание для проекта, может занимать несколько строчекОписание для проекта, может занимать несколько строчекОписание для проекта, может занимать несколько строчек"
+    )
+    ListProjectItem(project = fakeProject)
+}
+
+@Preview
+@Composable
+fun ListProjectItemPreview2() {
+    val fakeProject = Projects(
+        id = "3",
+        name = "Sadasdasd",
+        description = "sadasdasfdsgfdgfdsgjkfdshjgdsfjgjkfdshkjghjkdfgdflsghsghdjlfhlkgdfslhkghldfkjskhjlsdfghjklsdfgkjhlgfds"
+    )
+    ListProjectItem(project = fakeProject)
+}
