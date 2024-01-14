@@ -7,7 +7,7 @@ val InitialProfileState = ProfileState(
     profileLoading = false,
     error = false,
     errorMessage = null,
-    itemList = null
+    itemList = emptyList()
 )
 
 data class ProfileState(

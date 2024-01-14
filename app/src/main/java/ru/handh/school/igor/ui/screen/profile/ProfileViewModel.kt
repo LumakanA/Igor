@@ -1,33 +1,29 @@
 package ru.handh.school.igor.ui.screen.profile
 
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
-import ru.handh.school.igor.data.database.MainDb
-import ru.handh.school.igor.data.database.ProfileEntity
+import ru.handh.school.igor.data.database.ProfileDao
 import ru.handh.school.igor.domain.profile.ProfileUseCase
 import ru.handh.school.igor.ui.base.BaseViewModel
 
 class ProfileViewModel(
     private val profileUseCase: ProfileUseCase,
-    private val database: MainDb
+    private val profileDao: ProfileDao
 ) : BaseViewModel<ProfileState, ProfileViewAction>(InitialProfileState) {
 
     init {
         viewModelScope.launch {
-            onSubmitClicked()
+            onLoadProfile()
         }
     }
 
     override fun onAction(action: ProfileViewAction) {
         when (action) {
-            ProfileViewAction.SubmitClicked -> onSubmitClicked()
+            is ProfileViewAction.LoadProfile -> onLoadProfile()
         }
     }
 
-    val itemsList: Flow<List<ProfileEntity>> = database.profileDao.getProfile()
-
-    private fun onSubmitClicked() {
+    private fun onLoadProfile() {
         viewModelScope.launch {
             try {
                 reduceState {
@@ -35,19 +31,31 @@ class ProfileViewModel(
                         profileLoading = true,
                         profileButtonLoading = true,
                         error = false,
-                        errorMessage = null
+                        errorMessage = null,
+                        itemList = emptyList()
                     )
                 }
-
-                database.profileDao.deleteAll()
-                profileUseCase.execute()
-                reduceState {
-                    it.copy(
-                        profileLoading = false,
-                        profileButtonLoading = false,
-                        error = false,
-                        errorMessage = null
-                    )
+                profileDao.deleteAll()
+                val loadedData = profileUseCase.execute()
+                if (loadedData.isNotEmpty()) {
+                    reduceState {
+                        it.copy(
+                            profileLoading = false,
+                            profileButtonLoading = false,
+                            error = false,
+                            errorMessage = null,
+                            itemList = loadedData
+                        )
+                    }
+                } else {
+                    reduceState {
+                        it.copy(
+                            error = true,
+                            profileLoading = false,
+                            profileButtonLoading = false,
+                            itemList = emptyList()
+                        )
+                    }
                 }
             } catch (e: Exception) {
                 reduceState {
@@ -55,12 +63,14 @@ class ProfileViewModel(
                         error = true,
                         profileLoading = false,
                         profileButtonLoading = false,
-                        errorMessage = e.message
+                        errorMessage = e.message,
+                        itemList = emptyList()
                     )
                 }
             }
         }
     }
 }
+
 
 

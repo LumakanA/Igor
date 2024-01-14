@@ -8,7 +8,7 @@ class ProfileUseCase(
     private val igorRepositoryImp: IgorRepositoryImp,
     private val profileDao: ProfileDao
 ) {
-    suspend fun execute() {
+    suspend fun execute(): List<ProfileEntity> {
         try {
             val profileData = igorRepositoryImp.getProfile()
             val profile = profileData.data?.profile
@@ -18,8 +18,11 @@ class ProfileUseCase(
                     surname = profile.surname ?: "",
                 )
                 profileDao.replaceProfile(profileEntity)
+                return listOf(profileEntity)
             }
-        } catch (_: Exception) {
+        } catch (e: Exception) {
         }
+        return emptyList()
     }
 }
+

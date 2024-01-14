@@ -118,3 +118,14 @@ fun ListProjectItemPreview2() {
     )
     ListProjectItem(project = fakeProject)
 }
+
+@Preview
+@Composable
+fun ListProjectItemPreview3() {
+    val fakeProject = Projects(
+        id = "3",
+        name = "Sadasdasd",
+        description = "sadasdasfdsgfdgfdsgjkfdshjgdsfjgjkfdshkjghjkdfgdflsghsghdjlfhlkgdfslhkghldfkjskhjlsdfghjklsdfgkjhlgfds"
+    )
+    ListProjectItem(project = fakeProject)
+}

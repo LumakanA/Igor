@@ -29,6 +29,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import ru.handh.school.igor.R
 import ru.handh.school.igor.ui.components.AppButton
+import ru.handh.school.igor.ui.navigation.Screen
 import ru.handh.school.igor.ui.theme.AppTheme
 import ru.handh.school.igor.utils.versionCode
 import ru.handh.school.igor.utils.versionName
@@ -127,7 +128,11 @@ private fun AboutContent(
                 loading = state.aboutLoading,
                 onClick = {
                     onAction(AboutViewAction.SubmitClicked)
-                    navController.navigate("signIn")
+                    navController.navigate("signIn") {
+                        popUpTo(Screen.Start.route) {
+                            inclusive = false
+                        }
+                    }
                 },
                 backgroundColor = AppTheme.colors.red
             )

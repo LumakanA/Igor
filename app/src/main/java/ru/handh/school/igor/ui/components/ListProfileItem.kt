@@ -45,12 +45,12 @@ fun ProfileIconWithLetter(
 
 @Composable
 fun ListProfileItem(
-    item: ProfileEntity
+    item: ProfileEntity?
 ) {
     Box {
         Row {
             val letterIcon =
-                item.name.firstOrNull().toString() + item.surname.firstOrNull().toString()
+                item?.name?.firstOrNull().toString() + item?.surname?.firstOrNull().toString()
             ProfileIconWithLetter(letter = letterIcon)
             Column(
                 modifier = Modifier
@@ -60,14 +60,14 @@ fun ListProfileItem(
                     )
             ) {
                 BasicText(
-                    text = item.name,
+                    text = item?.name.orEmpty(),
                     style = AppTheme.textStyles.text2,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
                 BasicText(
                     modifier = Modifier.padding(top = 8.dp),
-                    text = item.surname,
+                    text = item?.surname.orEmpty(),
                     style = AppTheme.textStyles.text6,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis

@@ -11,7 +11,7 @@ class AboutViewModel(
     BaseViewModel<AboutState, AboutViewAction>(InitialAboutState) {
     override fun onAction(action: AboutViewAction) {
         when (action) {
-            AboutViewAction.SubmitClicked -> onSubmitClicked()
+            is AboutViewAction.SubmitClicked -> onSubmitClicked()
         }
     }
 

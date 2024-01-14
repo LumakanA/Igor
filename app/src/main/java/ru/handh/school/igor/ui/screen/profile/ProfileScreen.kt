@@ -7,8 +7,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
@@ -48,13 +46,11 @@ fun ProfileScreen(
 ) {
 
     val state by vm.state.collectAsState()
-    val itemList by vm.itemsList.collectAsState(initial = emptyList())
 
     ProfileContent(
         state = state,
         onAction = vm::onAction,
-        navController = navController,
-        itemList = itemList,
+        navController = navController
     )
 }
 
@@ -63,13 +59,12 @@ fun ProfileScreen(
 private fun ProfileContent(
     state: ProfileState,
     onAction: (ProfileViewAction) -> Unit = {},
-    navController: NavController,
-    itemList: List<ProfileEntity>,
+    navController: NavController
 ) {
     val isRefreshing by remember { mutableStateOf(false) }
     val pullRefreshState = rememberPullRefreshState(
         refreshing = isRefreshing,
-        onRefresh = { onAction(ProfileViewAction.SubmitClicked) }
+        onRefresh = { onAction(ProfileViewAction.LoadProfile) }
     )
     Scaffold(
         topBar = {
@@ -116,6 +111,11 @@ private fun ProfileContent(
                 .pullRefresh(pullRefreshState),
             contentAlignment = Alignment.TopCenter
         ) {
+            PullRefreshIndicator(
+                refreshing = state.profileLoading,
+                state = pullRefreshState,
+                modifier = Modifier.align(Alignment.TopCenter),
+            )
             if (state.error) {
                 Box(
                     modifier = Modifier
@@ -149,7 +149,7 @@ private fun ProfileContent(
                             label = stringResource(R.string.retry),
                             loading = state.profileLoading,
                             onClick = {
-                                onAction(ProfileViewAction.SubmitClicked)
+                                onAction(ProfileViewAction.LoadProfile)
                             },
                             backgroundColor = AppTheme.colors.red
                         )
@@ -158,17 +158,10 @@ private fun ProfileContent(
             } else if (state.profileLoading) {
                 CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
             } else {
-                LazyColumn(modifier = Modifier.padding(top = AppTheme.offsets.large)) {
-                    items(itemList) { item ->
-                        ListProfileItem(item = item)
-                    }
+                Column(modifier = Modifier.padding(top = AppTheme.offsets.large)) {
+                    ListProfileItem(item = state.itemList?.firstOrNull())
                 }
             }
-            PullRefreshIndicator(
-                refreshing = state.profileLoading,
-                state = pullRefreshState,
-                modifier = Modifier.align(Alignment.TopCenter),
-            )
         }
     }
 }
@@ -180,8 +173,7 @@ private fun ProfileContentPreview() {
         ProfileEntity(name = "John", surname = "Doe"),
     )
     ProfileContent(
-        state = InitialProfileState,
-        navController = rememberNavController(),
-        itemList = fakeItemList
+        state = InitialProfileState.copy(itemList = fakeItemList),
+        navController = rememberNavController()
     )
 }

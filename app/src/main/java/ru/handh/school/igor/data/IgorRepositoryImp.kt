@@ -7,12 +7,14 @@ import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.ClientRequestException
 import io.ktor.client.plugins.DefaultRequest
 import io.ktor.client.plugins.auth.Auth
+import io.ktor.client.plugins.auth.providers.BearerAuthProvider
 import io.ktor.client.plugins.auth.providers.BearerTokens
 import io.ktor.client.plugins.auth.providers.bearer
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
+import io.ktor.client.plugins.plugin
 import io.ktor.client.request.accept
 import io.ktor.client.request.get
 import io.ktor.client.request.header
@@ -71,10 +73,13 @@ class IgorRepositoryImp(
                         markAsRefreshTokenRequest()
                         setBody(mapOf("refreshToken" to storage.refreshToken))
                     }.body<SessionData>()
-
                     storage.accessToken = token.data?.session?.accessToken
                     storage.refreshToken = token.data?.session?.refreshToken
-
+                    val provider = client.plugin(Auth)
+                        .providers
+                        .filterIsInstance<BearerAuthProvider>()
+                        .firstOrNull()
+                    provider?.clearToken()
                     BearerTokens(
                         accessToken = token.data?.session?.accessToken ?: "",
                         refreshToken = token.data?.session?.refreshToken ?: ""
@@ -113,9 +118,14 @@ class IgorRepositoryImp(
     override suspend fun postSignOut() {
         try {
             client.post(ApiUrls.POST_SIGN_OUT) {
+                val provider = client.plugin(Auth)
+                    .providers
+                    .filterIsInstance<BearerAuthProvider>()
+                    .firstOrNull()
+                provider?.clearToken()
+                storage.accessToken = null
+                storage.refreshToken = null
             }
-            storage.accessToken = null
-            storage.refreshToken = null
         } catch (e: ClientRequestException) {
             throw e
         }
