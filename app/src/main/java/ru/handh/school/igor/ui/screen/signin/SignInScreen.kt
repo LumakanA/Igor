@@ -38,7 +38,7 @@ fun SignInScreen(
     navController: NavController,
     context: Context
 ) {
-    LaunchedEffect(vm, context) {
+    LaunchedEffect(vm) {
         vm.codeResult.collect { result ->
             when (result) {
                 is ResultAuth.UserAuth -> {
@@ -74,7 +74,7 @@ private fun SignInContent(
 ) {
     val quarterScreenHeight = LocalConfiguration.current.screenHeightDp.dp / 8
 
-    Scaffold { containerPadding ->
+    Scaffold(modifier = Modifier.verticalScroll(rememberScrollState())) { containerPadding ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -86,9 +86,6 @@ private fun SignInContent(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = AppTheme.offsets.medium)
-                    .verticalScroll(rememberScrollState()) /* работает не так как надо
-                     * элементы уходят за невидимую границу
-                     * последний элемент обрезается TODO() */
             ) {
                 BasicText(
                     modifier = Modifier.padding(bottom = AppTheme.offsets.huge),
