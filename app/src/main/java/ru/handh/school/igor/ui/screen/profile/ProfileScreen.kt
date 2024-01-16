@@ -170,7 +170,7 @@ private fun ProfileContent(
 @Composable
 private fun ProfileContentPreview() {
     val fakeItemList = listOf(
-        ProfileEntity(name = "John", surname = "Doe"),
+        ProfileEntity(name = "John", surname = "Doe", icon = null),
     )
     ProfileContent(
         state = InitialProfileState.copy(itemList = fakeItemList),

@@ -150,7 +150,13 @@ private fun HomepageContent(
                     items(state.projects) { project ->
                         ListProjectItem(
                             project = project,
-                            onClick = { onAction(HomepageViewAction.ProjectClicked(project.id.orEmpty())) })
+                            onClick = {
+                                navController.navigate("projectDetails");
+                                onAction(
+                                    HomepageViewAction.ProjectClicked(project.id.orEmpty())
+                                )
+                            },
+                        )
                     }
                 }
             }

@@ -15,10 +15,12 @@ import androidx.navigation.compose.rememberNavController
 import org.koin.android.ext.android.inject
 import org.koin.androidx.compose.koinViewModel
 import ru.handh.school.igor.R
+import ru.handh.school.igor.data.DeviceIdProvider
 import ru.handh.school.igor.data.KeyValueStorage
 import ru.handh.school.igor.ui.navigation.Screen
 import ru.handh.school.igor.ui.screen.about.AboutScreen
 import ru.handh.school.igor.ui.screen.homepage.HomepageScreen
+import ru.handh.school.igor.ui.screen.homepageDetails.HomepageDetailsScreen
 import ru.handh.school.igor.ui.screen.profile.ProfileScreen
 import ru.handh.school.igor.ui.screen.signin.SignInScreen
 import ru.handh.school.igor.ui.theme.AppTheme
@@ -43,10 +45,11 @@ class MainActivity : ComponentActivity() {
     private val shouldSplashScreenDismiss: Boolean
         get() = true
     private val storage: KeyValueStorage by inject()
+    private val deviceIdProvider: DeviceIdProvider by inject()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setupWindow()
         setupRootComponent()
     }
@@ -76,9 +79,9 @@ class MainActivity : ComponentActivity() {
      */
     private fun setupRootComponent() {
         setContent {
+            deviceIdProvider.deviceId
+            val navController = rememberNavController()
             AppTheme {
-                val navController = rememberNavController()
-
                 NavHost(navController = navController, startDestination = Screen.Start.route) {
                     composable(Screen.Start.route) {
                         if (storage.accessToken != null) {
@@ -111,8 +114,8 @@ class MainActivity : ComponentActivity() {
                     composable(Screen.About.route) {
                         AboutScreen(vm = koinViewModel(), navController = navController)
                     }
-                    composable(Screen.ProjectDetails.route) {
-                        AboutScreen(vm = koinViewModel(), navController = navController)
+                    composable(Screen.ProjectDetails.route) { backStackEntry ->
+                        HomepageDetailsScreen(vm = koinViewModel(), navController = navController)
                     }
                 }
             }

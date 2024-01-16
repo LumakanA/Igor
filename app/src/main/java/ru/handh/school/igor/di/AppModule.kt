@@ -24,10 +24,10 @@ val appModule = module {
         KeyValueStorage(get())
     }
     single {
-        IgorRepositoryImp(get())
+        DeviceIdProvider(get())
     }
     single {
-        DeviceIdProvider(get())
+        IgorRepositoryImp(get())
     }
     single {
         Room.databaseBuilder(

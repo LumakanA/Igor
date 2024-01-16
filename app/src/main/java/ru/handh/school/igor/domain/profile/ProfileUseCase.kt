@@ -14,8 +14,9 @@ class ProfileUseCase(
             val profile = profileData.data?.profile
             if (profile != null) {
                 val profileEntity = ProfileEntity(
-                    name = profile.name ?: "",
-                    surname = profile.surname ?: "",
+                    name = profile.name.orEmpty(),
+                    surname = profile.surname.orEmpty(),
+                    icon = profile.icon.orEmpty()
                 )
                 profileDao.replaceProfile(profileEntity)
                 return listOf(profileEntity)

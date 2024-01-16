@@ -86,29 +86,19 @@ class HomepageViewModel(
                         homepageLoading = true,
                         homepageButtonLoading = true,
                         error = false,
-                        errorMessage = null
+                        errorMessage = null,
+                        selectedProjectId = id
                     )
                 }
                 val projectDetails = projectDetailsUseCase.execute(id)
-                val newProjectsDetails = projectDetails.data?.data?.name?.isEmpty()
-                if (projectDetails.data?.data?.name?.isEmpty() == true) {
-                    reduceState {
-                        it.copy(
-                            error = true,
-                            homepageLoading = false,
-                            homepageButtonLoading = false,
-                        )
-                    }
-                } else {
-                    reduceState {
-                        it.copy(
-//                            projects = newProjectsDetails,
-                            homepageLoading = false,
-                            homepageButtonLoading = false,
-                            error = false,
-                            errorMessage = null
-                        )
-                    }
+                reduceState {
+                    it.copy(
+                        projectsDetails = projectDetails.data?.data,
+                        homepageLoading = false,
+                        homepageButtonLoading = false,
+                        error = false,
+                        errorMessage = null
+                    )
                 }
             } catch (e: Exception) {
                 resultProjectsChannel.send(ResultProjects.UnknownError())

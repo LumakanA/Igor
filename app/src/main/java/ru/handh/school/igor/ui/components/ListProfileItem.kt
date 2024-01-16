@@ -12,9 +12,17 @@ import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
+import ru.handh.school.igor.R
 import ru.handh.school.igor.data.database.ProfileEntity
 import ru.handh.school.igor.ui.theme.AppTheme
 
@@ -51,7 +59,20 @@ fun ListProfileItem(
         Row {
             val letterIcon =
                 item?.name?.firstOrNull().toString() + item?.surname?.firstOrNull().toString()
-            ProfileIconWithLetter(letter = letterIcon)
+            if (item?.icon != null && item.icon.isNotEmpty()) {
+                AsyncImage(
+                    modifier = Modifier.clip(CircleShape),
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(item.icon)
+                        .crossfade(true)
+                        .build(),
+                    placeholder = painterResource(id = R.drawable.icon_profile),
+                    contentDescription = stringResource(id = R.string.icon_profile),
+                    contentScale = ContentScale.Crop,
+                )
+            } else {
+                ProfileIconWithLetter(letter = letterIcon)
+            }
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -81,7 +102,7 @@ fun ListProfileItem(
 @Composable
 fun ListItemPreview() {
     val previewItem =
-        ProfileEntity(name = "Johnnnnnnnnnnnnnnnnnnnnn", surname = "Doeeeeeeeeeeeeeeeeeee")
+        ProfileEntity(name = "Johnnnnnnnnnnnnnnnnnnnnn", surname = "Doeeeeeeeeeeeeeeeeeee", icon = null)
     ListProfileItem(previewItem)
 }
 
@@ -89,6 +110,6 @@ fun ListItemPreview() {
 @Composable
 fun ListItemPreview1() {
     val previewItem =
-        ProfileEntity(name = "Константин", surname = "Архангельский-Прохоров")
+        ProfileEntity(name = "Константин", surname = "Архангельский-Прохоров", icon = null)
     ListProfileItem(previewItem)
 }

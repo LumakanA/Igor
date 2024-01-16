@@ -1,8 +1,8 @@
 package ru.handh.school.igor.ui.screen.homepageDetails
 
-import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -19,31 +19,33 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import ru.handh.school.igor.R
+import ru.handh.school.igor.ui.screen.homepage.HomepageState
 import ru.handh.school.igor.ui.screen.homepage.HomepageViewModel
+import ru.handh.school.igor.ui.screen.homepage.InitialHomepageState
 import ru.handh.school.igor.ui.theme.AppTheme
 
 
 @Composable
-fun ProjectDetailScreen(
+fun HomepageDetailsScreen(
     vm: HomepageViewModel,
-    navController: NavController,
-    context: Context
+    navController: NavController
 ) {
     val state by vm.state.collectAsState()
-    ProjectDetailContent(
+    HomepageDetailsContent(
         navController,
+        state
     )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProjectDetailContent(
+fun HomepageDetailsContent(
     navController: NavController,
+    state: HomepageState
 ) {
     Scaffold(
         topBar = {
@@ -55,7 +57,7 @@ fun ProjectDetailContent(
                         modifier = Modifier
                             .fillMaxWidth()
                             .wrapContentSize(Alignment.Center),
-                        text = stringResource(R.string.profile),
+                        text = state.projectsDetails?.name.orEmpty(),
                         style = AppTheme.textStyles.text3,
                     )
                 },
@@ -78,15 +80,23 @@ fun ProjectDetailContent(
                 .fillMaxSize()
                 .padding(innerPadding)
                 .background(color = AppTheme.colors.surface),
-            contentAlignment = Alignment.TopCenter
         ) {
-
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(AppTheme.offsets.medium)
+            ) {
+                BasicText(
+                    text = state.projectsDetails?.description.orEmpty(),
+                    style = AppTheme.textStyles.textDescriptionProjectDetails
+                )
+            }
         }
     }
 }
 
 @Preview
 @Composable
-fun ProjectDetailScreenPreview() {
-    ProjectDetailContent(navController = rememberNavController())
+fun HomepageDetailsScreenPreview() {
+    HomepageDetailsContent(navController = rememberNavController(), state = InitialHomepageState)
 }

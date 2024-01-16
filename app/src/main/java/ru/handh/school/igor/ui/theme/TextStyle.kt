@@ -15,7 +15,8 @@ data class AppTextStyles(
     val text6: TextStyle,
     val text7: TextStyle,
     val text8: TextStyle,
-    val text9: TextStyle
+    val text9: TextStyle,
+    val textDescriptionProjectDetails: TextStyle
 )
 
 val defaultTextStyles = AppTextStyles(
@@ -57,5 +58,10 @@ val defaultTextStyles = AppTextStyles(
     text9 = TextStyle(
         fontSize = 16.sp,
         lineHeight = 16.sp
+    ),
+    textDescriptionProjectDetails = TextStyle(
+        fontSize = 16.sp,
+        lineHeight = 20.sp,
+        fontFamily = FontFamily(Font(R.font.roboto_400))
     )
 )

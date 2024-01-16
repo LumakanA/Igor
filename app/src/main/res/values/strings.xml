@@ -13,6 +13,7 @@
     <string name="you_logged">Вы успешно вошли</string>
     <string name="error_occurred">Произошла ошибка</string>
     <string name="profile">Профиль</string>
+    <string name="icon_profile">Иконка профиля</string>
     <string name="projects">Проекты</string>
     <string name="something_went_wrong">Что-то пошло не так</string>
     <string name="retry">Повторить</string>
