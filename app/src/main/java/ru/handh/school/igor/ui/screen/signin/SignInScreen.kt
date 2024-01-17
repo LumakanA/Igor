@@ -4,15 +4,13 @@ import android.content.Context
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.BasicText
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -74,11 +72,12 @@ private fun SignInContent(
 ) {
     val quarterScreenHeight = LocalConfiguration.current.screenHeightDp.dp / 8
 
-    Scaffold(modifier = Modifier.verticalScroll(rememberScrollState())) { containerPadding ->
+    Scaffold { containerPadding ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .offset(y = quarterScreenHeight)
+                .background(AppTheme.colors.surface)
+                .padding(top = quarterScreenHeight)
                 .padding(containerPadding),
             contentAlignment = Alignment.TopCenter
         ) {

@@ -2,20 +2,19 @@ package ru.handh.school.igor.ui.screen.homepage
 
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
-import ru.handh.school.igor.domain.projectDetails.ProjectDetailsUseCase
+import ru.handh.school.igor.data.GlobalData
 import ru.handh.school.igor.domain.projects.ProjectsUseCase
 import ru.handh.school.igor.domain.results.ResultProjects
 import ru.handh.school.igor.ui.base.BaseViewModel
 
 class HomepageViewModel(
-    private val projectsUseCase: ProjectsUseCase,
-    private val projectDetailsUseCase: ProjectDetailsUseCase
+    private val sharedViewModel: GlobalData,
+    private val projectsUseCase: ProjectsUseCase
 ) :
     BaseViewModel<HomepageState, HomepageViewAction>(InitialHomepageState) {
     private val resultProjectsChannel = Channel<ResultProjects<Unit>>()
-    val projectsResult = resultProjectsChannel.receiveAsFlow()
+    private var isInitialized = false
     override fun onAction(action: HomepageViewAction) {
         when (action) {
             is HomepageViewAction.ReloadClicked -> onReloadClicked()
@@ -24,7 +23,10 @@ class HomepageViewModel(
     }
 
     init {
-        onReloadClicked()
+        if (!isInitialized) {
+            onReloadClicked()
+            isInitialized = true
+        }
     }
 
     private fun onReloadClicked() {
@@ -81,6 +83,7 @@ class HomepageViewModel(
     private fun onProjectClicked(id: String) {
         viewModelScope.launch {
             try {
+                sharedViewModel.setSelectedProjectId(id)
                 reduceState {
                     it.copy(
                         homepageLoading = true,
@@ -88,16 +91,6 @@ class HomepageViewModel(
                         error = false,
                         errorMessage = null,
                         selectedProjectId = id
-                    )
-                }
-                val projectDetails = projectDetailsUseCase.execute(id)
-                reduceState {
-                    it.copy(
-                        projectsDetails = projectDetails.data?.data,
-                        homepageLoading = false,
-                        homepageButtonLoading = false,
-                        error = false,
-                        errorMessage = null
                     )
                 }
             } catch (e: Exception) {

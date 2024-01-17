@@ -33,7 +33,7 @@ fun AppTextField(
     modifier: Modifier = Modifier,
     value: String,
     onValueChange: (String) -> Unit,
-    hint: String,
+    hint: String
 ) {
     var isFocused by remember { mutableStateOf(false) }
     BasicTextField(
@@ -49,6 +49,7 @@ fun AppTextField(
             .onFocusChanged { focusState ->
                 isFocused = focusState.isFocused
             },
+        singleLine = true,
         value = value,
         onValueChange = { onValueChange(it) },
         textStyle = AppTheme.textStyles.buttonText,
