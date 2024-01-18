@@ -50,7 +50,6 @@ class SignInViewModel(
                                 it.copy(signInLoading = false)
                             }
                         }
-
                         is ResultAuth.ReceivedSession -> {
                             resultAuthChannel.send(resultSignIn)
                         }

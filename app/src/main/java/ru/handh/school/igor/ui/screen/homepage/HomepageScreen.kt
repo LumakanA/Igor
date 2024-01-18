@@ -37,6 +37,7 @@ import androidx.navigation.compose.rememberNavController
 import ru.handh.school.igor.R
 import ru.handh.school.igor.ui.components.AppButton
 import ru.handh.school.igor.ui.components.ListProjectItem
+import ru.handh.school.igor.ui.navigation.Screen
 import ru.handh.school.igor.ui.theme.AppTheme
 
 private val DefaultButtonOffset = 52.dp
@@ -80,7 +81,7 @@ private fun HomepageContent(
                 },
                 actions = {
                     IconButton(onClick = {
-                        navController.navigate("profile")
+                        navController.navigate(Screen.Profile.route)
                     }) {
                         Icon(
                             painter = painterResource(id = R.drawable.profile),

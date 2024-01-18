@@ -61,7 +61,10 @@ fun ProjectTask(
 
 @Preview
 @Composable
-fun ProjectTask() {
-    ProjectTask("Создать проект", firstPriority)
+fun ProjectTaskPreview() {
+    ProjectTask(
+        task = "Создать проект",
+        priority = firstPriority
+    )
 }
 

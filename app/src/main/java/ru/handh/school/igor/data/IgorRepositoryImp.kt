@@ -70,16 +70,16 @@ class IgorRepositoryImp(
                 }
                 refreshTokens {
                     val token = client.post(ApiUrls.REFRESH_TOKEN) {
+                        val provider = client.plugin(Auth)
+                            .providers
+                            .filterIsInstance<BearerAuthProvider>()
+                            .firstOrNull()
+                        provider?.clearToken()
                         markAsRefreshTokenRequest()
                         setBody(mapOf("refreshToken" to storage.refreshToken))
                     }.body<SessionData>()
                     storage.accessToken = token.data?.session?.accessToken
                     storage.refreshToken = token.data?.session?.refreshToken
-                    val provider = client.plugin(Auth)
-                        .providers
-                        .filterIsInstance<BearerAuthProvider>()
-                        .firstOrNull()
-                    provider?.clearToken()
                     BearerTokens(
                         accessToken = token.data?.session?.accessToken ?: "",
                         refreshToken = token.data?.session?.refreshToken ?: ""
@@ -123,8 +123,6 @@ class IgorRepositoryImp(
                     .filterIsInstance<BearerAuthProvider>()
                     .firstOrNull()
                 provider?.clearToken()
-                storage.accessToken = null
-                storage.refreshToken = null
             }
         } catch (e: ClientRequestException) {
             throw e

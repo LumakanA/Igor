@@ -5,6 +5,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class ProjectsWrapper(
-    val projects: List<Projects>?,
+    @SerialName("projects") val projects: List<Projects>?,
     @SerialName("hasMore") val hasMore: Boolean?
 )

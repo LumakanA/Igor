@@ -69,7 +69,7 @@ val appModule = module {
         ProfileViewModel(get(), get())
     }
     viewModel {
-        AboutViewModel(get())
+        AboutViewModel(get(), get())
     }
     viewModel {
         HomepageViewModel(get(), get())

@@ -9,20 +9,13 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsControllerCompat
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import org.koin.android.ext.android.inject
-import org.koin.androidx.compose.koinViewModel
 import ru.handh.school.igor.R
 import ru.handh.school.igor.data.DeviceIdProvider
 import ru.handh.school.igor.data.KeyValueStorage
+import ru.handh.school.igor.ui.navigation.NavigationGraph
 import ru.handh.school.igor.ui.navigation.Screen
-import ru.handh.school.igor.ui.screen.about.AboutScreen
-import ru.handh.school.igor.ui.screen.homepage.HomepageScreen
-import ru.handh.school.igor.ui.screen.homepageDetails.HomepageDetailsScreen
-import ru.handh.school.igor.ui.screen.profile.ProfileScreen
-import ru.handh.school.igor.ui.screen.signin.SignInScreen
 import ru.handh.school.igor.ui.theme.AppTheme
 
 /**
@@ -82,40 +75,14 @@ class MainActivity : ComponentActivity() {
             deviceIdProvider.deviceId
             val navController = rememberNavController()
             AppTheme {
-                NavHost(navController = navController, startDestination = Screen.Start.route) {
-                    composable(Screen.Start.route) {
-                        if (storage.accessToken != null) {
-                            HomepageScreen(
-                                vm = koinViewModel(), navController = navController
-                            )
-                        } else {
-                            SignInScreen(
-                                vm = koinViewModel(), navController = navController,
-                                context = this@MainActivity
-                            )
-                        }
-                    }
-                    composable(Screen.SignIn.route) {
-                        SignInScreen(
-                            vm = koinViewModel(), navController = navController,
-                            context = this@MainActivity
-                        )
-                    }
-                    composable(Screen.Homepage.route) {
-                        HomepageScreen(
-                            vm = koinViewModel(), navController = navController
-                        )
-                    }
-                    composable(Screen.Profile.route) {
-                        ProfileScreen(vm = koinViewModel(), navController = navController)
-                    }
-                    composable(Screen.About.route) {
-                        AboutScreen(vm = koinViewModel(), navController = navController)
-                    }
-                    composable(Screen.ProjectDetails.route) { backStackEntry ->
-                        HomepageDetailsScreen(vm = koinViewModel(), navController = navController)
-                    }
-                }
+                NavigationGraph(
+                    navController = navController,
+                    startScreen = (if (storage.accessToken != null) {
+                        Screen.Homepage.route
+                    } else {
+                        Screen.SignIn.route
+                    }),
+                )
             }
         }
         keepSplashScreenUntilAllComplete()

@@ -31,6 +31,7 @@ import ru.handh.school.igor.ui.components.ProjectTask
 import ru.handh.school.igor.ui.components.firstPriority
 import ru.handh.school.igor.ui.components.secondPriority
 import ru.handh.school.igor.ui.components.thirdPriority
+import ru.handh.school.igor.ui.navigation.Screen
 import ru.handh.school.igor.ui.theme.AppTheme
 
 private val DefaultButtonOffset = 52.dp
@@ -79,7 +80,7 @@ fun HomepageDetailsContent(
                 },
                 navigationIcon = {
                     IconButton(onClick = {
-                        navController.navigate("homepage")
+                        navController.navigate(Screen.Homepage.route)
                     }) {
                         Icon(
                             painter = painterResource(id = R.drawable.back),

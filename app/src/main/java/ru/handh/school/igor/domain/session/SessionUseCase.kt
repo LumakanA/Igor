@@ -11,7 +11,6 @@ class SessionUseCase(
     suspend fun execute(code: String): ResultAuth<Unit> {
         return try {
             val result = igorRepositoryImp.getSession(code)
-
             keyValueStorage.accessToken = result.data?.session?.accessToken
             keyValueStorage.refreshToken = result.data?.session?.refreshToken
             ResultAuth.ReceivedSession()

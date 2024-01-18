@@ -10,16 +10,15 @@ class ProfileViewModel(
     private val profileUseCase: ProfileUseCase,
     private val profileDao: ProfileDao
 ) : BaseViewModel<ProfileState, ProfileViewAction>(InitialProfileState) {
+    override fun onAction(action: ProfileViewAction) {
+        when (action) {
+            is ProfileViewAction.LoadProfile -> onLoadProfile()
+        }
+    }
 
     init {
         viewModelScope.launch {
             onLoadProfile()
-        }
-    }
-
-    override fun onAction(action: ProfileViewAction) {
-        when (action) {
-            is ProfileViewAction.LoadProfile -> onLoadProfile()
         }
     }
 

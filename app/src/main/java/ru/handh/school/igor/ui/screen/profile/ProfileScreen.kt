@@ -36,6 +36,7 @@ import ru.handh.school.igor.R
 import ru.handh.school.igor.data.database.ProfileEntity
 import ru.handh.school.igor.ui.components.AppButton
 import ru.handh.school.igor.ui.components.ListProfileItem
+import ru.handh.school.igor.ui.navigation.Screen
 import ru.handh.school.igor.ui.theme.AppTheme
 
 private val DefaultButtonOffset = 52.dp
@@ -83,7 +84,7 @@ private fun ProfileContent(
                 },
                 navigationIcon = {
                     IconButton(onClick = {
-                        navController.navigate("homepage")
+                        navController.navigate(Screen.Homepage.route)
                     }) {
                         Icon(
                             painter = painterResource(id = R.drawable.back),
@@ -93,7 +94,7 @@ private fun ProfileContent(
                 },
                 actions = {
                     IconButton(onClick = {
-                        navController.navigate("about")
+                        navController.navigate(Screen.About.route)
                     }) {
                         Icon(
                             painter = painterResource(id = R.drawable.info),

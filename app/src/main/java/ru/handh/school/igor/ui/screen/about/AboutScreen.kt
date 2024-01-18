@@ -1,6 +1,7 @@
 package ru.handh.school.igor.ui.screen.about
 
 import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -17,6 +18,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -28,6 +30,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import ru.handh.school.igor.R
+import ru.handh.school.igor.domain.results.ResultProfile
 import ru.handh.school.igor.ui.components.AppButton
 import ru.handh.school.igor.ui.navigation.Screen
 import ru.handh.school.igor.ui.theme.AppTheme
@@ -40,7 +43,25 @@ fun AboutScreen(
     vm: AboutViewModel,
     navController: NavController
 ) {
+    val context = LocalContext.current
     val state by vm.state.collectAsState()
+    LaunchedEffect(vm) {
+        vm.loggedOutResult.collect { result ->
+            when (result) {
+                is ResultProfile.LoggedOut -> {
+                    navController.navigate(Screen.SignIn.route) {
+                        popUpTo(Screen.Homepage.route) {
+                            inclusive = true
+                        }
+                    }
+                }
+
+                is ResultProfile.UnknownError -> {
+                    Toast.makeText(context, R.string.something_went_wrong, Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+    }
     AboutContent(
         state = state,
         onAction = vm::onAction,
@@ -70,7 +91,7 @@ private fun AboutContent(
                 },
                 navigationIcon = {
                     IconButton(onClick = {
-                        navController.navigate("profile")
+                        navController.navigate(Screen.Profile.route)
                     }) {
                         Icon(
                             painter = painterResource(id = R.drawable.back),
@@ -128,11 +149,6 @@ private fun AboutContent(
                 loading = state.aboutLoading,
                 onClick = {
                     onAction(AboutViewAction.SignOut)
-                    navController.navigate("signIn") {
-                        popUpTo(Screen.Start.route) {
-                            inclusive = false
-                        }
-                    }
                 },
                 backgroundColor = AppTheme.colors.red
             )

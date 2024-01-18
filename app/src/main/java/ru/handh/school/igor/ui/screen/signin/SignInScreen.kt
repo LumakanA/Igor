@@ -1,7 +1,5 @@
 package ru.handh.school.igor.ui.screen.signin
 
-import android.content.Context
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
@@ -20,6 +18,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -28,36 +27,38 @@ import ru.handh.school.igor.R
 import ru.handh.school.igor.domain.results.ResultAuth
 import ru.handh.school.igor.ui.components.AppButton
 import ru.handh.school.igor.ui.components.AppTextField
+import ru.handh.school.igor.ui.navigation.Screen
 import ru.handh.school.igor.ui.theme.AppTheme
 
 @Composable
 fun SignInScreen(
     vm: SignInViewModel,
-    navController: NavController,
-    context: Context
+    navController: NavController
 ) {
+    val context = LocalContext.current
+    val state by vm.state.collectAsState()
     LaunchedEffect(vm) {
         vm.codeResult.collect { result ->
             when (result) {
                 is ResultAuth.UserAuth -> {
-                    Log.d("SessionCollect", "UserAuth result received")
                     Toast.makeText(context, R.string.email_send, Toast.LENGTH_LONG).show()
                 }
 
                 is ResultAuth.ReceivedSession -> {
-                    Log.d("SessionCollect", "ReceivedSession result received")
                     Toast.makeText(context, R.string.you_logged, Toast.LENGTH_LONG).show()
-                    navController.navigate("homepage")
+                    navController.navigate(Screen.Homepage.route) {
+                        popUpTo(Screen.SignIn.route) {
+                            inclusive = true
+                        }
+                    }
                 }
 
                 is ResultAuth.UnknownError -> {
-                    Log.d("SessionCollect", "UnknownError result received")
                     Toast.makeText(context, R.string.error_occurred, Toast.LENGTH_LONG).show()
                 }
             }
         }
     }
-    val state by vm.state.collectAsState()
     SignInContent(
         state = state,
         onAction = vm::onAction

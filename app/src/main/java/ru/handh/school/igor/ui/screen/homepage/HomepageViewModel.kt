@@ -14,7 +14,6 @@ class HomepageViewModel(
 ) :
     BaseViewModel<HomepageState, HomepageViewAction>(InitialHomepageState) {
     private val resultProjectsChannel = Channel<ResultProjects<Unit>>()
-    private var isInitialized = false
     override fun onAction(action: HomepageViewAction) {
         when (action) {
             is HomepageViewAction.ReloadClicked -> onReloadClicked()
@@ -23,10 +22,7 @@ class HomepageViewModel(
     }
 
     init {
-        if (!isInitialized) {
-            onReloadClicked()
-            isInitialized = true
-        }
+        onReloadClicked()
     }
 
     private fun onReloadClicked() {
