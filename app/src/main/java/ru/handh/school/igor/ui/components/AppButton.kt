@@ -60,7 +60,7 @@ fun AppButton(
         } else {
             BasicText(
                 text = label,
-                style = AppTheme.textStyles.buttonText.copy(
+                style = AppTheme.textStyles.normalText.copy(
                     color = contentColor
                 ),
                 maxLines = 1,

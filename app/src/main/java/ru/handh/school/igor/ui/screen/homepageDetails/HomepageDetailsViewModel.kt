@@ -40,14 +40,26 @@ class HomepageDetailsViewModel(
 
                 if (projectId != null) {
                     val projectDetails = projectDetailsUseCase.execute(projectId)
-                    reduceState {
-                        it.copy(
-                            projectsDetails = projectDetails.data?.data,
-                            homepageLoading = false,
-                            homepageButtonLoading = false,
-                            error = false,
-                            errorMessage = null
-                        )
+
+                    if (projectDetails.data == null || projectDetails.data.data.toString().isEmpty()) {
+                        reduceState {
+                            it.copy(
+                                homepageLoading = false,
+                                homepageButtonLoading = false,
+                                error = true,
+                                errorMessage = "Empty project details"
+                            )
+                        }
+                    } else {
+                        reduceState {
+                            it.copy(
+                                projectsDetails = projectDetails.data.data,
+                                homepageLoading = false,
+                                homepageButtonLoading = false,
+                                error = false,
+                                errorMessage = null
+                            )
+                        }
                     }
                 } else {
                     reduceState {

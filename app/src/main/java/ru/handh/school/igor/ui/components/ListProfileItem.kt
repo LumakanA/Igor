@@ -45,7 +45,7 @@ fun ProfileIconWithLetter(
         ) {
             BasicText(
                 text = letter,
-                style = AppTheme.textStyles.text2.copy(color = AppTheme.colors.darkSurface)
+                style = AppTheme.textStyles.heading1.copy(color = AppTheme.colors.darkSurface)
             )
         }
     }
@@ -82,14 +82,14 @@ fun ListProfileItem(
             ) {
                 BasicText(
                     text = item?.name.orEmpty(),
-                    style = AppTheme.textStyles.text2,
+                    style = AppTheme.textStyles.heading1,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
                 BasicText(
                     modifier = Modifier.padding(top = 8.dp),
                     text = item?.surname.orEmpty(),
-                    style = AppTheme.textStyles.text6,
+                    style = AppTheme.textStyles.body,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )

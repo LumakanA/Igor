@@ -89,7 +89,7 @@ private fun SignInContent(
                 BasicText(
                     modifier = Modifier.padding(bottom = AppTheme.offsets.huge),
                     text = stringResource(R.string.login),
-                    style = AppTheme.textStyles.text2
+                    style = AppTheme.textStyles.heading1
                 )
 
                 AppTextField(
@@ -123,9 +123,9 @@ private fun SignInContent(
                     enabled = state.buttonEnabled,
                     onClick = {
                         if (state.showVerificationCodeInput) {
-                            onAction(SignInViewAction.SubmitClickedCode)
+                            onAction(SignInViewAction.SendCode)
                         } else {
-                            onAction(SignInViewAction.SubmitClicked)
+                            onAction(SignInViewAction.SendEmail)
                         }
                     }
                 )

@@ -1,6 +1,5 @@
 package ru.handh.school.igor.ui.screen.homepage
 
-import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -45,8 +44,7 @@ private val DefaultButtonOffset = 52.dp
 @Composable
 fun HomepageScreen(
     vm: HomepageViewModel,
-    navController: NavController,
-    context: Context
+    navController: NavController
 ) {
     val state by vm.state.collectAsState()
     HomepageContent(
@@ -77,7 +75,7 @@ private fun HomepageContent(
                             .fillMaxWidth()
                             .wrapContentSize(Alignment.Center),
                         text = stringResource(R.string.projects),
-                        style = AppTheme.textStyles.text3
+                        style = AppTheme.textStyles.heading2
                     )
                 },
                 actions = {
@@ -120,7 +118,7 @@ private fun HomepageContent(
                         BasicText(
                             modifier = Modifier.align(Alignment.CenterHorizontally),
                             text = stringResource(R.string.something_went_wrong),
-                            style = AppTheme.textStyles.text8
+                            style = AppTheme.textStyles.largeText
                         )
                         BasicText(
                             modifier = Modifier
@@ -128,7 +126,7 @@ private fun HomepageContent(
                                 .align(Alignment.CenterHorizontally),
                             text = state.errorMessage
                                 ?: stringResource(R.string.unknown_error_has_occurred),
-                            style = AppTheme.textStyles.text9
+                            style = AppTheme.textStyles.smallText
                         )
                         AppButton(
                             modifier = Modifier
@@ -151,7 +149,7 @@ private fun HomepageContent(
                         ListProjectItem(
                             project = project,
                             onClick = {
-                                navController.navigate("projectDetails");
+                                navController.navigate("projectDetails")
                                 onAction(
                                     HomepageViewAction.ProjectClicked(project.id.orEmpty())
                                 )

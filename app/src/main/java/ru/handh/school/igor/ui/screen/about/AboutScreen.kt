@@ -65,7 +65,7 @@ private fun AboutContent(
                             .fillMaxWidth()
                             .wrapContentSize(Alignment.Center),
                         text = stringResource(R.string.about),
-                        style = AppTheme.textStyles.text3,
+                        style = AppTheme.textStyles.heading2,
                     )
                 },
                 navigationIcon = {
@@ -103,18 +103,18 @@ private fun AboutContent(
                     Column(modifier = Modifier.padding(start = AppTheme.offsets.medium)) {
                         BasicText(
                             text = stringResource(R.string.igor),
-                            style = AppTheme.textStyles.text4
+                            style = AppTheme.textStyles.heading3
                         )
 
                         BasicText(
                             modifier = Modifier.padding(top = AppTheme.offsets.small),
                             text = stringResource(R.string.version, context.versionName),
-                            style = AppTheme.textStyles.text5
+                            style = AppTheme.textStyles.lightText.copy(color = AppTheme.colors.lightGrey)
                         )
 
                         BasicText(
                             text = stringResource(R.string.build_number, context.versionCode),
-                            style = AppTheme.textStyles.text5
+                            style = AppTheme.textStyles.lightText.copy(color = AppTheme.colors.lightGrey)
                         )
                     }
                 }
@@ -127,7 +127,7 @@ private fun AboutContent(
                 label = stringResource(R.string.exitButton),
                 loading = state.aboutLoading,
                 onClick = {
-                    onAction(AboutViewAction.SubmitClicked)
+                    onAction(AboutViewAction.SignOut)
                     navController.navigate("signIn") {
                         popUpTo(Screen.Start.route) {
                             inclusive = false

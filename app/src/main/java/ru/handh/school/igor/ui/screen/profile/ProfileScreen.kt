@@ -77,7 +77,7 @@ private fun ProfileContent(
                             .fillMaxWidth()
                             .wrapContentSize(Alignment.Center),
                         text = stringResource(R.string.profile),
-                        style = AppTheme.textStyles.text3,
+                        style = AppTheme.textStyles.heading2,
                     )
                 },
                 navigationIcon = {
@@ -132,7 +132,7 @@ private fun ProfileContent(
                         BasicText(
                             modifier = Modifier.align(Alignment.CenterHorizontally),
                             text = stringResource(R.string.something_went_wrong),
-                            style = AppTheme.textStyles.text8
+                            style = AppTheme.textStyles.largeText
                         )
                         BasicText(
                             modifier = Modifier
@@ -140,7 +140,7 @@ private fun ProfileContent(
                                 .align(Alignment.CenterHorizontally),
                             text = state.errorMessage
                                 ?: stringResource(R.string.unknown_error_has_occurred),
-                            style = AppTheme.textStyles.text9
+                            style = AppTheme.textStyles.smallText
                         )
                         AppButton(
                             modifier = Modifier

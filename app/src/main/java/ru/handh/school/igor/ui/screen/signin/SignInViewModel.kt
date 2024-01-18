@@ -19,13 +19,13 @@ class SignInViewModel(
 
     override fun onAction(action: SignInViewAction) =
         when (action) {
-            is SignInViewAction.SubmitClicked -> onSubmitClicked()
-            is SignInViewAction.SubmitClickedCode -> onSubmitClickedCode()
+            is SignInViewAction.SendEmail -> onSendEmail()
+            is SignInViewAction.SendCode -> onSendCode()
             is SignInViewAction.UpdateEmail -> onUpdateEmail(action.email)
             is SignInViewAction.UpdateVerificationCode -> onUpdateVerificationCode(action.code)
         }
 
-    private fun onSubmitClicked() {
+    private fun onSendEmail() {
         viewModelScope.launch {
             val email = state.value.email
             if (emailValidation(email)) {
@@ -68,7 +68,7 @@ class SignInViewModel(
         }
     }
 
-    private fun onSubmitClickedCode() {
+    private fun onSendCode() {
         viewModelScope.launch {
             val code = state.value.code
             if (codeValidation(code)) {

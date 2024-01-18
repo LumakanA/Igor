@@ -37,7 +37,7 @@ fun ProjectIconWithLetter(
     ) {
         BasicText(
             text = letter,
-            style = AppTheme.textStyles.text7.copy(color = AppTheme.colors.darkSurface)
+            style = AppTheme.textStyles.caption.copy(color = AppTheme.colors.darkSurface)
         )
     }
 }
@@ -70,13 +70,13 @@ fun ListProjectItem(
                     modifier = Modifier
                         .padding(bottom = ProjectTextPadding),
                     text = project.name.orEmpty(),
-                    style = AppTheme.textStyles.text7,
+                    style = AppTheme.textStyles.highlightedText,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
                 BasicText(
                     text = project.description.orEmpty(),
-                    style = AppTheme.textStyles.text5,
+                    style = AppTheme.textStyles.subtitle,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis
                 )

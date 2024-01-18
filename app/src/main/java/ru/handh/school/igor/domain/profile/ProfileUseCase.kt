@@ -21,7 +21,7 @@ class ProfileUseCase(
                 profileDao.replaceProfile(profileEntity)
                 return listOf(profileEntity)
             }
-        } catch (e: Exception) {
+        } catch (_: Exception) {
         }
         return emptyList()
     }

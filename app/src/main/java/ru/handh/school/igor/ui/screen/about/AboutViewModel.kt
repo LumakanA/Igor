@@ -11,11 +11,11 @@ class AboutViewModel(
     BaseViewModel<AboutState, AboutViewAction>(InitialAboutState) {
     override fun onAction(action: AboutViewAction) {
         when (action) {
-            is AboutViewAction.SubmitClicked -> onSubmitClicked()
+            is AboutViewAction.SignOut -> onSignOut()
         }
     }
 
-    private fun onSubmitClicked() {
+    private fun onSignOut() {
         viewModelScope.launch {
             reduceState {
                 it.copy(aboutLoading = true)

@@ -27,6 +27,10 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import ru.handh.school.igor.R
 import ru.handh.school.igor.ui.components.AppButton
+import ru.handh.school.igor.ui.components.ProjectTask
+import ru.handh.school.igor.ui.components.firstPriority
+import ru.handh.school.igor.ui.components.secondPriority
+import ru.handh.school.igor.ui.components.thirdPriority
 import ru.handh.school.igor.ui.theme.AppTheme
 
 private val DefaultButtonOffset = 52.dp
@@ -40,7 +44,13 @@ fun HomepageDetailsScreen(
     HomepageDetailsContent(
         navController,
         onAction = vm::onAction,
-        state
+        state,
+        tasks = listOf(
+            "Создать проект" to firstPriority,
+            "Переделать проект" to secondPriority,
+            "Опубликовать проект" to thirdPriority,
+            "Исправить баг" to firstPriority,
+        )
     )
 }
 
@@ -49,8 +59,10 @@ fun HomepageDetailsScreen(
 fun HomepageDetailsContent(
     navController: NavController,
     onAction: (HomepageDetailsViewAction) -> Unit = {},
-    state: HomepageDetailsState
+    state: HomepageDetailsState,
+    tasks: List<Pair<String, String>>
 ) {
+
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -62,7 +74,7 @@ fun HomepageDetailsContent(
                             .fillMaxWidth()
                             .wrapContentSize(Alignment.Center),
                         text = state.projectsDetails?.name.orEmpty(),
-                        style = AppTheme.textStyles.text3,
+                        style = AppTheme.textStyles.heading2,
                     )
                 },
                 navigationIcon = {
@@ -96,7 +108,7 @@ fun HomepageDetailsContent(
                     BasicText(
                         modifier = Modifier.align(Alignment.CenterHorizontally),
                         text = stringResource(R.string.something_went_wrong),
-                        style = AppTheme.textStyles.text8
+                        style = AppTheme.textStyles.largeText
                     )
                     BasicText(
                         modifier = Modifier
@@ -104,7 +116,7 @@ fun HomepageDetailsContent(
                             .align(Alignment.CenterHorizontally),
                         text = state.errorMessage
                             ?: stringResource(R.string.unknown_error_has_occurred),
-                        style = AppTheme.textStyles.text9
+                        style = AppTheme.textStyles.smallText
                     )
                     AppButton(
                         modifier = Modifier
@@ -133,8 +145,11 @@ fun HomepageDetailsContent(
                 ) {
                     BasicText(
                         text = state.projectsDetails?.description.orEmpty(),
-                        style = AppTheme.textStyles.textDescriptionProjectDetails
+                        style = AppTheme.textStyles.mediumText
                     )
+                    tasks.forEach { (task, priority) ->
+                        ProjectTask(task = task, priority = priority)
+                    }
                 }
             }
         }
@@ -146,6 +161,12 @@ fun HomepageDetailsContent(
 fun HomepageDetailsScreenPreview() {
     HomepageDetailsContent(
         navController = rememberNavController(),
-        state = InitialHomepageDetailsState
+        state = InitialHomepageDetailsState,
+        tasks = listOf(
+            "Создать проект" to firstPriority,
+            "Переделать проект" to secondPriority,
+            "Опубликовать проект" to thirdPriority,
+            "Исправить баг" to firstPriority,
+        )
     )
 }

@@ -52,7 +52,7 @@ fun AppTextField(
         singleLine = true,
         value = value,
         onValueChange = { onValueChange(it) },
-        textStyle = AppTheme.textStyles.buttonText,
+        textStyle = AppTheme.textStyles.normalText,
         decorationBox = { innerTextField ->
             Box(
                 modifier = Modifier
@@ -67,7 +67,7 @@ fun AppTextField(
             ) {
                 BasicText(
                     text = if (value.isEmpty()) hint else "",
-                    style = AppTheme.textStyles.buttonText.copy(color = Color.Gray),
+                    style = AppTheme.textStyles.normalText.copy(color = Color.Gray),
                 )
                 innerTextField()
             }

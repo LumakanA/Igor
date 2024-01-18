@@ -90,7 +90,7 @@ class IgorRepositoryImp(
         install(DefaultRequest) {
             header(HttpHeaders.ContentType, ContentType.Application.Json)
             accept(ContentType.Application.Json)
-            url("http://45.144.64.179/project/api/")
+            url(ApiUrls.BASE_URL)
         }
     }
 
