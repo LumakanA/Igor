@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.text.BasicText
@@ -19,6 +18,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -91,53 +91,51 @@ fun HomepageDetailsContent(
         }
     )
     { innerPadding ->
-        if (state.error) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(color = AppTheme.colors.surface),
-                contentAlignment = Alignment.TopCenter
-            ) {
-                Column(
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .background(color = AppTheme.colors.surface),
+        ) {
+            if (state.error) {
+                Box(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 200.dp)
-                        .navigationBarsPadding()
-                        .align(Alignment.TopCenter),
+                        .fillMaxSize()
+                        .background(color = AppTheme.colors.surface)
                 ) {
-                    BasicText(
-                        modifier = Modifier.align(Alignment.CenterHorizontally),
-                        text = stringResource(R.string.something_went_wrong),
-                        style = AppTheme.textStyles.largeText
-                    )
-                    BasicText(
-                        modifier = Modifier
-                            .padding(top = AppTheme.offsets.large, bottom = DefaultButtonOffset)
-                            .align(Alignment.CenterHorizontally),
-                        text = state.errorMessage
-                            ?: stringResource(R.string.unknown_error_has_occurred),
-                        style = AppTheme.textStyles.smallText
-                    )
-                    AppButton(
+                    val quarterScreenHeight = LocalConfiguration.current.screenHeightDp.dp / 4
+                    Column(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(AppTheme.offsets.medium),
-                        label = stringResource(R.string.retry),
-                        loading = state.homepageButtonLoading,
-                        onClick = {
-                            onAction(HomepageDetailsViewAction.UploadingData)
-                        },
-                        backgroundColor = AppTheme.colors.red
-                    )
+                            .padding(top = quarterScreenHeight),
+                    ) {
+                        BasicText(
+                            modifier = Modifier.align(Alignment.CenterHorizontally),
+                            text = stringResource(R.string.something_went_wrong),
+                            style = AppTheme.textStyles.largeText
+                        )
+                        BasicText(
+                            modifier = Modifier
+                                .padding(top = AppTheme.offsets.large, bottom = DefaultButtonOffset)
+                                .align(Alignment.CenterHorizontally),
+                            text = state.errorMessage
+                                ?: stringResource(R.string.unknown_error_has_occurred),
+                            style = AppTheme.textStyles.smallText
+                        )
+                        AppButton(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(AppTheme.offsets.medium),
+                            label = stringResource(R.string.retry),
+                            loading = state.homepageButtonLoading,
+                            onClick = {
+                                onAction(HomepageDetailsViewAction.UploadingData)
+                            },
+                            backgroundColor = AppTheme.colors.red
+                        )
+                    }
                 }
-            }
-        } else {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding)
-                    .background(color = AppTheme.colors.surface),
-            ) {
+            } else {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()

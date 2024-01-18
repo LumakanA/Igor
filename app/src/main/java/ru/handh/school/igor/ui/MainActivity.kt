@@ -86,8 +86,7 @@ class MainActivity : ComponentActivity() {
                     composable(Screen.Start.route) {
                         if (storage.accessToken != null) {
                             HomepageScreen(
-                                vm = koinViewModel(), navController = navController,
-                                context = this@MainActivity
+                                vm = koinViewModel(), navController = navController
                             )
                         } else {
                             SignInScreen(
@@ -104,8 +103,7 @@ class MainActivity : ComponentActivity() {
                     }
                     composable(Screen.Homepage.route) {
                         HomepageScreen(
-                            vm = koinViewModel(), navController = navController,
-                            context = this@MainActivity
+                            vm = koinViewModel(), navController = navController
                         )
                     }
                     composable(Screen.Profile.route) {

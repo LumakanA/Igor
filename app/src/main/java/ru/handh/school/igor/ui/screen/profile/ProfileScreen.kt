@@ -25,6 +25,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -120,14 +121,13 @@ private fun ProfileContent(
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(color = AppTheme.colors.surface),
-                    contentAlignment = Alignment.TopCenter
+                        .background(color = AppTheme.colors.surface)
                 ) {
+                    val quarterScreenHeight = LocalConfiguration.current.screenHeightDp.dp / 4
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(top = 200.dp)
-                            .align(Alignment.TopCenter),
+                            .padding(top = quarterScreenHeight),
                     ) {
                         BasicText(
                             modifier = Modifier.align(Alignment.CenterHorizontally),
